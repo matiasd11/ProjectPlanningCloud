@@ -10,7 +10,7 @@ router.post('/migrate-task-types', async (req, res) => {
     console.log('🚀 Ejecutando migración: Insertar tipos de tarea...');
 
     // Insertar tipos de tarea por defecto (PostgreSQL syntax)
-    await sequelize.query(`
+    const [results, metadata] = await sequelize.query(`
       INSERT INTO task_types (title, "createdAt", "updatedAt") VALUES 
         ('Planificación', NOW(), NOW()),
         ('Ejecución', NOW(), NOW()),
@@ -19,14 +19,15 @@ router.post('/migrate-task-types', async (req, res) => {
         ('Evaluación', NOW(), NOW()),
         ('Administración', NOW(), NOW())
       ON CONFLICT (title) DO NOTHING
-    `, { type: QueryTypes.INSERT });
+      RETURNING id, title
+    `);
 
     console.log('✅ Tipos de tarea insertados');
 
     // Verificar los tipos insertados
-    const taskTypes = await sequelize.query(`
+    const [taskTypes] = await sequelize.query(`
       SELECT id, title FROM task_types ORDER BY id
-    `, { type: QueryTypes.SELECT });
+    `);
 
     console.log('📋 Tipos de tarea disponibles:', taskTypes);
 
