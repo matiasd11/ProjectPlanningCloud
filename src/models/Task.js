@@ -47,33 +47,21 @@ const Task = sequelize.define('Task', {
       min: 0
     }
   },
-  // Foreign Keys
+  // Simplified fields (removed foreign key constraints)
   projectId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    field: 'project_id',
-    references: {
-      model: 'projects',
-      key: 'id'
-    }
+    allowNull: true,
+    field: 'project_id'
   },
   takenBy: {
     type: DataTypes.INTEGER,
     field: 'taken_by',
-    references: {
-      model: 'users',
-      key: 'id'
-    },
     comment: 'ONG que se hace cargo voluntariamente de esta tarea'
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    field: 'created_by',
-    references: {
-      model: 'users',
-      key: 'id'
-    }
+    allowNull: true,
+    field: 'created_by'
   },
   taskTypeId: {
     type: DataTypes.INTEGER,
@@ -87,6 +75,7 @@ const Task = sequelize.define('Task', {
   isCoverageRequest: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
+    defaultValue: false,
     field: 'is_coverage_request'
   }
 }, {

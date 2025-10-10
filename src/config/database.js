@@ -43,11 +43,13 @@ const connectDB = async () => {
     console.log('✅ Database connection established successfully');
     
     if (process.env.NODE_ENV !== 'test') {
-      await sequelize.sync({ alter: false });
+      // Crear solo las tablas que necesitamos, sin foreign key constraints problemáticas
+      await sequelize.sync({ force: false, alter: false });
       console.log('✅ Database synchronized');
     }
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error);
+    console.error('Error details:', error.message);
     process.exit(1);
   }
 };
