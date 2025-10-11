@@ -169,6 +169,66 @@ const taskController = {
         error: error.message
       });
     }
+  },
+
+  // Crear múltiples tareas de una vez
+  createMultipleTasks: async (req, res) => {
+    try {
+      const { tasks } = req.body;
+      
+      if (!Array.isArray(tasks) || tasks.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Se requiere un array de tareas válido'
+        });
+      }
+
+      // Validar que todas las tareas tengan los campos requeridos
+      for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        if (!task.title || !task.taskTypeId) {
+          return res.status(400).json({
+            success: false,
+            message: `Tarea ${i + 1}: título y taskTypeId son requeridos`
+          });
+        }
+        
+        // Establecer valores por defecto
+        task.isCoverageRequest = task.isCoverageRequest !== undefined ? task.isCoverageRequest : true;
+        task.status = task.status || 'todo';
+      }
+
+      // Crear todas las tareas
+      const createdTasks = await Task.bulkCreate(tasks, {
+        returning: true
+      });
+
+      // Obtener las tareas creadas con sus relaciones
+      const tasksWithTypes = await Task.findAll({
+        where: {
+          id: createdTasks.map(task => task.id)
+        },
+        include: [{
+          model: TaskType,
+          as: 'taskType',
+          attributes: ['id', 'title']
+        }],
+        order: [['id', 'ASC']]
+      });
+
+      res.status(201).json({
+        success: true,
+        data: tasksWithTypes,
+        message: `${createdTasks.length} tareas creadas exitosamente`
+      });
+    } catch (error) {
+      console.error('Error creating multiple tasks:', error);
+      res.status(400).json({
+        success: false,
+        message: 'Error al crear las tareas',
+        error: error.message
+      });
+    }
   }
 };
 
