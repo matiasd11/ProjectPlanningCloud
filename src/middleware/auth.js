@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-this';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware para verificar JWT
 const authenticateToken = (req, res, next) => {
