@@ -21,14 +21,7 @@ const commitmentController = {
           message: 'taskId y ongId son requeridos'
         });
       }
-      // Verificar que la tarea no tenga un commitment asignado
-      const existing = await Commitment.findOne({ where: { taskId } });
-      if (existing) {
-        return res.status(409).json({
-          success: false,
-          message: 'La tarea ya tiene un Commitment asignado'
-        });
-      }
+      // Permitir varios commitments por tarea
       const commitment = await Commitment.create({ taskId, ongId, status, description });
       res.status(201).json({ success: true, data: commitment });
     } catch (error) {
@@ -44,20 +37,23 @@ const commitmentController = {
       if (!commitmentId || !taskId) {
         return res.status(400).json({ success: false, message: 'commitmentId y taskId son requeridos' });
       }
-      // Verificar que la tarea no tenga un commitment asignado
-      const existing = await Commitment.findOne({ where: { taskId } });
-      if (existing) {
-        return res.status(409).json({ success: false, message: 'La tarea ya tiene un Commitment asignado' });
+      // Verificar que no haya otro commitment aprobado para la tarea
+      const alreadyApproved = await Commitment.findOne({ where: { taskId, status: 'approved' } });
+      if (alreadyApproved) {
+        return res.status(409).json({ success: false, message: 'Ya existe un Commitment aprobado para esta tarea' });
       }
       // Actualizar el commitment para asignar la tarea
       const commitment = await Commitment.findByPk(commitmentId);
       if (!commitment) {
         return res.status(404).json({ success: false, message: 'Commitment no encontrado' });
       }
-        commitment.taskId = taskId;
-        commitment.status = 'approved';
-        await commitment.save();
-        res.json({ success: true, data: commitment });
+      // Solo actualizar status y asegurar que el commitment corresponde a la tarea
+      if (commitment.taskId !== taskId) {
+        return res.status(400).json({ success: false, message: 'El Commitment no corresponde a la tarea indicada' });
+      }
+      commitment.status = 'approved';
+      await commitment.save();
+      res.json({ success: true, data: commitment });
     } catch (error) {
       console.error('Error asignando commitment:', error);
       res.status(500).json({ success: false, message: 'Error al asignar el commitment', error: error.message });
