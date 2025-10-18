@@ -1,6 +1,16 @@
 const { Commitment, Task } = require('../models');
 
 const commitmentController = {
+  // Obtener todos los commitments
+  getAllCommitments: async (req, res) => {
+    try {
+      const commitments = await Commitment.findAll();
+      res.json({ success: true, data: commitments });
+    } catch (error) {
+      console.error('Error fetching commitments:', error);
+      res.status(500).json({ success: false, message: 'Error al obtener los commitments', error: error.message });
+    }
+  },
   // Crear un nuevo commitment
   createCommitment: async (req, res) => {
     try {
