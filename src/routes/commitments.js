@@ -4,10 +4,10 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Crear un nuevo commitment (requiere token)
+// Crear un nuevo commitment 
 router.post('/', authenticateToken, commitmentController.createCommitment);
 
-// Asignar un commitment existente a una tarea (requiere token)
+// Asignar un commitment existente a una tarea 
 router.post('/assign', authenticateToken, commitmentController.assignCommitmentToTask);
 
 module.exports = router;
