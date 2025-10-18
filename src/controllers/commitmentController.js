@@ -44,9 +44,10 @@ const commitmentController = {
       if (!commitment) {
         return res.status(404).json({ success: false, message: 'Commitment no encontrado' });
       }
-      commitment.taskId = taskId;
-      await commitment.save();
-      res.json({ success: true, data: commitment });
+        commitment.taskId = taskId;
+        commitment.status = 'approved';
+        await commitment.save();
+        res.json({ success: true, data: commitment });
     } catch (error) {
       console.error('Error asignando commitment:', error);
       res.status(500).json({ success: false, message: 'Error al asignar el commitment', error: error.message });

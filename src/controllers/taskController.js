@@ -104,18 +104,23 @@ const taskController = {
         return res.status(400).json({ success: false, message: 'projectId es requerido' });
       }
 
-      // Buscar IDs de tareas con Commitment asignado
+      // Buscar IDs de tareas con Commitment asignado y status 'approved'
       const assignedCommitments = await Commitment.findAll({
         attributes: ['taskId'],
-        where: { taskId: { [Op.not]: null } }
+        where: {
+          taskId: { [Op.not]: null },
+          status: 'approved'
+        }
       });
       const assignedTaskIds = assignedCommitments.map(c => c.taskId);
 
       // Buscar tareas del proyecto que NO estén en assignedTaskIds
       const whereClause = {
-        projectId,
-        id: { [Op.notIn]: assignedTaskIds }
+        projectId
       };
+      if (assignedTaskIds.length > 0) {
+        whereClause.id = { [Op.notIn]: assignedTaskIds };
+      }
       if (status) whereClause.status = status;
 
       const tasks = await Task.findAndCountAll({
