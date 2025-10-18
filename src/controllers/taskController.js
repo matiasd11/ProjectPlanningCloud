@@ -1,4 +1,5 @@
-const { Task, TaskType } = require('../models');
+const { Task, TaskType, Commitment, sequelize } = require('../models');
+const { Op } = require('sequelize');
 
 const taskController = {
   // Obtener todas las tareas
@@ -104,17 +105,16 @@ const taskController = {
       }
 
       // Buscar IDs de tareas con Commitment asignado
-      const { Commitment } = require('../models');
       const assignedCommitments = await Commitment.findAll({
         attributes: ['taskId'],
-        where: { taskId: { [Task.sequelize.Op.not]: null } }
+        where: { taskId: { [Op.not]: null } }
       });
       const assignedTaskIds = assignedCommitments.map(c => c.taskId);
 
       // Buscar tareas del proyecto que NO estén en assignedTaskIds
       const whereClause = {
         projectId,
-        id: { [Task.sequelize.Op.notIn]: assignedTaskIds }
+        id: { [Op.notIn]: assignedTaskIds }
       };
       if (status) whereClause.status = status;
 
