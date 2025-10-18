@@ -92,6 +92,64 @@ const taskController = {
     }
   },
 
+  // Obtener tareas de un proyecto que NO tienen Commitment asignado
+  getUnassignedTasksByProject: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const { page = 1, limit = 10, status } = req.query;
+      const offset = (page - 1) * limit;
+
+      if (!projectId) {
+        return res.status(400).json({ success: false, message: 'projectId es requerido' });
+      }
+
+      // Buscar IDs de tareas con Commitment asignado
+      const { Commitment } = require('../models');
+      const assignedCommitments = await Commitment.findAll({
+        attributes: ['taskId'],
+        where: { taskId: { [Task.sequelize.Op.not]: null } }
+      });
+      const assignedTaskIds = assignedCommitments.map(c => c.taskId);
+
+      // Buscar tareas del proyecto que NO estén en assignedTaskIds
+      const whereClause = {
+        projectId,
+        id: { [Task.sequelize.Op.notIn]: assignedTaskIds }
+      };
+      if (status) whereClause.status = status;
+
+      const tasks = await Task.findAndCountAll({
+        where: whereClause,
+        include: [{
+          model: TaskType,
+          as: 'taskType',
+          attributes: ['id', 'title']
+        }],
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        order: [['createdAt', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        data: tasks.rows,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: tasks.count,
+          totalPages: Math.ceil(tasks.count / limit)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching unassigned tasks by project:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al obtener las tareas sin Commitment',
+        error: error.message
+      });
+    }
+  },
+
   // Obtener una tarea por ID
   getTaskById: async (req, res) => {
     try {

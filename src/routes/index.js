@@ -1,16 +1,16 @@
 const express = require('express');
 const tasksRoutes = require('./tasks');
 const taskTypesRoutes = require('./taskTypes');
-const migrationRoutes = require('./migration');
 const authRoutes = require('./auth');
+const commitmentsRoutes = require('./commitments');
 
 const router = express.Router();
 
 // Rutas de la API
 router.use('/tasks', tasksRoutes);
 router.use('/task-types', taskTypesRoutes);
-router.use('/migration', migrationRoutes);
 router.use('/auth', authRoutes);
+router.use('/commitments', commitmentsRoutes);
 
 // Ruta de salud del API
 router.get('/health', (req, res) => {

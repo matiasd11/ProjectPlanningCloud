@@ -5,6 +5,7 @@ const { authenticateToken, optionalAuth } = require('../middleware/auth');
 const router = express.Router();
 
 // Rutas para tareas - Protegidas con JWT
+router.get('/project/:projectId/unassigned', optionalAuth, taskController.getUnassignedTasksByProject); // Listar tareas sin Commitment por proyecto
 router.get('/project/:projectId', optionalAuth, taskController.getTasksByProject); // Listar por proyecto (lectura opcional)
 router.get('/', optionalAuth, taskController.getAllTasks);                    // Lectura permite sin token
 router.get('/:id', optionalAuth, taskController.getTaskById);                 // Lectura permite sin token
