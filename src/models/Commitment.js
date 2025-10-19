@@ -23,7 +23,7 @@ const Commitment = sequelize.define('Commitment', {
     comment: 'ONG que propone el compromiso para una tarea colaborativa'
   },
   status: {
-    type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+    type: DataTypes.ENUM('pending', 'approved', 'rejected', 'done'),
     defaultValue: 'pending',
     allowNull: false
   },

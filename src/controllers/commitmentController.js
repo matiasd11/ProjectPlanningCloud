@@ -1,6 +1,31 @@
 const { Commitment, Task } = require('../models');
 
 const commitmentController = {
+  // Marcar un commitment y su tarea como done
+  commitmentDone: async (req, res) => {
+    try {
+      const { commitmentId } = req.body;
+      if (!commitmentId) {
+        return res.status(400).json({ success: false, message: 'commitmentId requerido' });
+      }
+      const commitment = await Commitment.findByPk(commitmentId);
+      if (!commitment) {
+        return res.status(404).json({ success: false, message: 'Commitment no encontrado' });
+      }
+      commitment.status = 'done';
+      await commitment.save();
+      // Marcar la tarea como done
+      const task = await Task.findByPk(commitment.taskId);
+      if (task) {
+        task.status = 'done';
+        await task.save();
+      }
+      res.json({ success: true, data: { commitment, task } });
+    } catch (error) {
+      console.error('Error marcando commitment y tarea como done:', error);
+      res.status(500).json({ success: false, message: 'Error al marcar como done', error: error.message });
+    }
+  },
   // Obtener todos los commitments
   getAllCommitments: async (req, res) => {
     try {
