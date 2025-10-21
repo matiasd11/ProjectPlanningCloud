@@ -15,7 +15,7 @@ router.post('/', authenticateToken, commitmentController.createCommitment);
 router.post('/assign', authenticateToken, commitmentController.assignCommitmentToTask);
 
 // Endpoint para marcar un commitment y su tarea como done
-router.post('/done', commitmentController.commitmentDone);
+router.post('/done', authenticateToken, commitmentController.commitmentDone);
 
 // Obtener commitments de una tarea específica
 router.get('/task/:taskId', authenticateToken, commitmentController.getCommitmentsByTask);
