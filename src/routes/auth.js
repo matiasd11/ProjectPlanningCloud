@@ -1,6 +1,5 @@
 const express = require('express');
 const authController = require('../controllers/authController');
-
 const router = express.Router();
 
 
@@ -52,12 +51,13 @@ const router = express.Router();
  *               example: "24h"
  */
 
+
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Método 1 - Método de autenticación a la API, donde se manda un usuario y contraseña y se obtiene un token jwt.
- *     description: Método de autenticación a la API, donde se manda un usuario y contraseña y se obtiene un token jwt.
+ *     summary: Autenticar usuario.
+ *     description: Método 1 - Método de autenticación a la API, donde se manda un usuario y contraseña y se obtiene un token jwt.
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -116,6 +116,7 @@ const router = express.Router();
  *                   example: "Database connection failed"
  */
 router.post('/login', authController.login);
+
 
 // /**
 //  * @swagger
@@ -204,5 +205,6 @@ router.post('/login', authController.login);
 //  *                   example: "JWT verification failed"
 //  */
 router.post('/validate', authController.validateToken);
+
 
 module.exports = router;
