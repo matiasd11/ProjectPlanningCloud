@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Rutas para tareas - Protegidas con JWT
 router.get('/project/:projectId', authenticateToken, taskController.getTasksByProject);
-router.get('/project/:projectId/unassigned', optionalAuth, taskController.getUnassignedTasksByProject); 
+router.get('/project/:projectId/unassigned', authenticateToken, taskController.getUnassignedTasksByProject); 
 router.get('/', optionalAuth, taskController.getAllTasks);                   
 router.post('/', authenticateToken, taskController.createTask);               
 router.post('/bulk', authenticateToken, taskController.createMultipleTasks); 
