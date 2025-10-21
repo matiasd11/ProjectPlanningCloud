@@ -17,6 +17,34 @@ const PORT = process.env.PORT || 3000;
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 
+// Configuración de servidores según el ambiente
+const getSwaggerServers = () => {
+  const servers = [];
+  
+  // Detectar si estamos en producción
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
+  
+  if (isProduction) {
+    // Servidor de producción (Render)
+    const productionUrl = process.env.RENDER_EXTERNAL_URL || 
+                         process.env.PUBLIC_URL || 
+                         'https://projectplanningcloud.onrender.com';
+    
+    servers.push({
+      url: productionUrl,
+      description: "Servidor de producción"
+    });
+  } else {
+    // Servidor de desarrollo
+    servers.push({
+      url: "http://localhost:3000",
+      description: "Servidor de desarrollo"
+    });
+  }
+  
+  return servers;
+};
+
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
@@ -25,12 +53,7 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "Documentación de la API Project Planning Cloud",
     },
-    servers: [
-      {
-        url: "http://localhost:3000",
-        description: "Servidor de desarrollo"
-      }
-    ],
+    servers: getSwaggerServers(),
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -47,7 +70,14 @@ const swaggerOptions = {
 
 // Función para generar Swagger spec
 const generateSwaggerSpec = () => {
-  return swaggerJsdoc(swaggerOptions);
+  const spec = swaggerJsdoc(swaggerOptions);
+  
+  // Log para debuggear la URL de Swagger
+  console.log('🔧 Swagger configurado con servidores:', spec.servers);
+  console.log('🌍 Ambiente:', process.env.NODE_ENV || 'development');
+  console.log('🚀 Render URL:', process.env.RENDER_EXTERNAL_URL || 'https://projectplanningcloud.onrender.com');
+  
+  return spec;
 };
 
 // Configurar Swagger con regeneración automática
