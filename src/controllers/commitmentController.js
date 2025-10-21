@@ -1,6 +1,20 @@
 const { Commitment, Task } = require('../models');
 
 const commitmentController = {
+  // Obtener commitments de una tarea específica
+  getCommitmentsByTask: async (req, res) => {
+    try {
+      const { taskId } = req.params;
+      if (!taskId) {
+        return res.status(400).json({ success: false, message: 'taskId requerido' });
+      }
+      const commitments = await Commitment.findAll({ where: { taskId } });
+      res.json({ success: true, data: commitments });
+    } catch (error) {
+      console.error('Error fetching commitments by task:', error);
+      res.status(500).json({ success: false, message: 'Error al obtener los commitments de la tarea', error: error.message });
+    }
+  },
   // Marcar un commitment y su tarea como done
   commitmentDone: async (req, res) => {
     try {

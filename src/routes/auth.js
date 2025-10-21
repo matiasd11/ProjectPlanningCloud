@@ -20,7 +20,8 @@ router.post('/login', async (req, res) => {
     const validCredentials = [
       { username: 'bonita_user', password: 'bonita_pass', role: 'bonita_system' },
       { username: 'api_user', password: 'api_pass', role: 'api_client' },
-      { username: 'admin', password: 'admin123', role: 'admin' }
+      { username: 'admin', password: 'admin123', role: 'admin' },
+      { username: 'walter.bates', password: 'bpm', role: 'user' }
     ];
 
     const user = validCredentials.find(
