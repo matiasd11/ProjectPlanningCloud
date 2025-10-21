@@ -112,6 +112,28 @@ const commitmentController = {
       res.status(500).json({ success: false, message: 'Error al asignar el commitment', error: error.message });
     }
   }
+,
+  // Obtener commitments de un proyecto (por projectId)
+  getCommitmentsByProject: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      if (!projectId) {
+        return res.status(400).json({ success: false, message: 'projectId requerido' });
+      }
+      // Obtener tareas del proyecto
+      const tasks = await Task.findAll({ where: { projectId } });
+      const taskIds = tasks.map(t => t.id);
+      if (taskIds.length === 0) {
+        return res.json({ success: true, data: [] });
+      }
+      // Buscar commitments cuyas taskId estén en taskIds
+      const commitments = await Commitment.findAll({ where: { taskId: taskIds } });
+      res.json({ success: true, data: commitments });
+    } catch (error) {
+      console.error('Error fetching commitments by project:', error);
+      res.status(500).json({ success: false, message: 'Error al obtener los commitments del proyecto', error: error.message });
+    }
+  }
 };
 
 module.exports = commitmentController;

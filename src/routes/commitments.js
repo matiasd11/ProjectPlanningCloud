@@ -442,6 +442,9 @@ router.post('/done', authenticateToken, commitmentController.commitmentDone);
  */
 router.get('/task/:taskId', authenticateToken, commitmentController.getCommitmentsByTask);
 
+// Obtener commitments de un proyecto específico
+router.get('/project/:projectId', authenticateToken, commitmentController.getCommitmentsByProject);
+
 
 /**
  * @swagger
