@@ -13,6 +13,50 @@ const { generalLimiter } = require('./middleware/rateLimiter');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configuración de Swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API Project Planning Cloud",
+      version: "1.0.0",
+      description: "Documentación de la API Project Planning Cloud",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+        description: "Servidor de desarrollo"
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Ingresa tu token JWT obtenido del endpoint de login"
+        }
+      }
+    }
+  },
+  apis: ["src/routes/*.js"],
+};
+
+// Función para generar Swagger spec
+const generateSwaggerSpec = () => {
+  return swaggerJsdoc(swaggerOptions);
+};
+
+// Configurar Swagger con regeneración automática
+app.use("/swagger", swaggerUi.serve, (req, res, next) => {
+  const swaggerSpec = generateSwaggerSpec();
+  swaggerUi.setup(swaggerSpec)(req, res, next);
+});
+
+
 // Middlewares de seguridad
 app.use(helmet());
 app.use(cors({

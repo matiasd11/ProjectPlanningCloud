@@ -12,6 +12,7 @@ services:
       - DB_NAME=projectplanning
       - DB_USER=postgres
       - DB_PASSWORD=password123
+      - PORT=3000
     depends_on:
       - postgres
     volumes:

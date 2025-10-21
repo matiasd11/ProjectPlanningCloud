@@ -1,6 +1,9 @@
 const { Commitment, Task } = require('../models');
 
 const commitmentController = {
+
+
+  
   // Obtener commitments de una tarea específica
   getCommitmentsByTask: async (req, res) => {
     try {
@@ -15,6 +18,9 @@ const commitmentController = {
       res.status(500).json({ success: false, message: 'Error al obtener los commitments de la tarea', error: error.message });
     }
   },
+
+
+
   // Marcar un commitment y su tarea como done
   commitmentDone: async (req, res) => {
     try {
@@ -40,6 +46,9 @@ const commitmentController = {
       res.status(500).json({ success: false, message: 'Error al marcar como done', error: error.message });
     }
   },
+
+
+
   // Obtener todos los commitments
   getAllCommitments: async (req, res) => {
     try {
@@ -50,6 +59,9 @@ const commitmentController = {
       res.status(500).json({ success: false, message: 'Error al obtener los commitments', error: error.message });
     }
   },
+
+
+
   // Crear un nuevo commitment
   createCommitment: async (req, res) => {
     try {
@@ -68,6 +80,8 @@ const commitmentController = {
       res.status(500).json({ success: false, message: 'Error al crear el commitment', error: error.message });
     }
   },
+
+
 
   // Asignar un commitment existente a una tarea
   assignCommitmentToTask: async (req, res) => {

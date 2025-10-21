@@ -1,113 +1,208 @@
 const express = require('express');
-const { generateToken } = require('../middleware/auth');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-// Endpoint para autenticación desde Bonita
-router.post('/login', async (req, res) => {
-  try {
-    const { username, password, system } = req.body;
 
-    // Validación básica
-    if (!username || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Username y password son requeridos'
-      });
-    }
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     LoginRequest:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: Nombre de usuario
+ *           example: "walter.bates"
+ *         password:
+ *           type: string
+ *           description: Contraseña
+ *           example: "bpm"
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *           example: "Autenticación exitosa"
+ *         data:
+ *           type: object
+ *           properties:
+ *             token:
+ *               type: string
+ *               description: JWT token
+ *               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IndhbGV0ci5iYXRlcyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjUyMjU5MDIyfQ.2gI5zDn-C-e-fRRLY08d0j0c7o3tYwWxHxX-pB2V5E"
+ *             user:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                   example: "walter.bates"
+ *                 role:
+ *                   type: string
+ *                   example: "user"
+ *             expiresIn:
+ *               type: string
+ *               example: "24h"
+ */
 
-    // Validar credenciales de Bonita (puedes personalizar esta lógica)
-    const validCredentials = [
-      { username: 'bonita_user', password: 'bonita_pass', role: 'bonita_system' },
-      { username: 'api_user', password: 'api_pass', role: 'api_client' },
-      { username: 'admin', password: 'admin123', role: 'admin' },
-      { username: 'walter.bates', password: 'bpm', role: 'user' }
-    ];
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Método 1 - Método de autenticación a la API, donde se manda un usuario y contraseña y se obtiene un token jwt.
+ *     description: Método de autenticación a la API, donde se manda un usuario y contraseña y se obtiene un token jwt.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginRequest'
+ *     responses:
+ *       200:
+ *         description: Autenticación exitosa
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       400:
+ *         description: Datos de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Username y password son requeridos"
+ *       401:
+ *         description: Credenciales inválidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Credenciales inválidas"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error interno del servidor"
+ *                 error:
+ *                   type: string
+ *                   example: "Database connection failed"
+ */
+router.post('/login', authController.login);
 
-    const user = validCredentials.find(
-      cred => cred.username === username && cred.password === password
-    );
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciales inválidas'
-      });
-    }
-
-    // Generar token con información del usuario
-    const tokenPayload = {
-      username: user.username,
-      role: user.role,
-      system: system || 'bonita',
-      iat: Math.floor(Date.now() / 1000)
-    };
-
-    const token = generateToken(tokenPayload, '24h');
-
-    res.json({
-      success: true,
-      message: 'Autenticación exitosa',
-      data: {
-        token,
-        user: {
-          username: user.username,
-          role: user.role,
-          system: system || 'bonita'
-        },
-        expiresIn: '24h'
-      }
-    });
-
-  } catch (error) {
-    console.error('Error en autenticación:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor',
-      error: error.message
-    });
-  }
-});
-
-// Endpoint para validar token
-router.post('/validate', async (req, res) => {
-  try {
-    const { token } = req.body;
-
-    if (!token) {
-      return res.status(400).json({
-        success: false,
-        message: 'Token requerido'
-      });
-    }
-
-    const { verifyToken } = require('../middleware/auth');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token inválido o expirado'
-      });
-    }
-
-    res.json({
-      success: true,
-      message: 'Token válido',
-      data: {
-        user: decoded,
-        isValid: true
-      }
-    });
-
-  } catch (error) {
-    console.error('Error validando token:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al validar token',
-      error: error.message
-    });
-  }
-});
+// /**
+//  * @swagger
+//  * /api/auth/validate:
+//  *   post:
+//  *     summary: Validar token JWT
+//  *     description: Valida si un token JWT es válido y no ha expirado
+//  *     tags: [Authentication]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - token
+//  *             properties:
+//  *               token:
+//  *                 type: string
+//  *                 description: JWT token a validar
+//  *                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+//  *     responses:
+//  *       200:
+//  *         description: Token válido
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                   example: true
+//  *                 message:
+//  *                   type: string
+//  *                   example: "Token válido"
+//  *                 data:
+//  *                   type: object
+//  *                   properties:
+//  *                     user:
+//  *                       type: object
+//  *                       description: Información del usuario decodificada
+//  *                     isValid:
+//  *                       type: boolean
+//  *                       example: true
+//  *       400:
+//  *         description: Token requerido
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                   example: false
+//  *                 message:
+//  *                   type: string
+//  *                   example: "Token requerido"
+//  *       401:
+//  *         description: Token inválido o expirado
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                   example: false
+//  *                 message:
+//  *                   type: string
+//  *                   example: "Token inválido o expirado"
+//  *       500:
+//  *         description: Error interno del servidor
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                   example: false
+//  *                 message:
+//  *                   type: string
+//  *                   example: "Error al validar token"
+//  *                 error:
+//  *                   type: string
+//  *                   example: "JWT verification failed"
+//  */
+router.post('/validate', authController.validateToken);
 
 module.exports = router;
