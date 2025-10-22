@@ -51,7 +51,7 @@ const connectDB = async () => {
     console.log('✅ Database connection established successfully');
     
     if (process.env.NODE_ENV !== 'test') {
-      await sequelize.sync({ force: false, alter: false });
+      await sequelize.sync({ force: false, alter: true });
       console.log('✅ Database synchronized');
     }
   } catch (error) {
