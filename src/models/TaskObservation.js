@@ -50,6 +50,18 @@ const TaskObservation = sequelize.define('TaskObservation', {
     allowNull: true,
     field: 'resolved_at',
     comment: 'Fecha de resolución'
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'created_at',
+    comment: 'Fecha de creación de la observación'
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'updated_at',
+    comment: 'Fecha de última actualización de la observación'
   }
 }, {
   tableName: 'task_observations',

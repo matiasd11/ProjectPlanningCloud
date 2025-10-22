@@ -76,6 +76,18 @@ const Task = sequelize.define('Task', {
     allowNull: false,
     defaultValue: false,
     field: 'is_coverage_request'
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'created_at',
+    comment: 'Fecha de creación de la tarea'
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'updated_at',
+    comment: 'Fecha de última actualización de la tarea'
   }
 }, {
   tableName: 'tasks',
@@ -83,14 +95,12 @@ const Task = sequelize.define('Task', {
   underscored: true,
   indexes: [
     { fields: ['project_id'] },
+    { fields: ['status'] },
+    { fields: ['created_at'] },
+    { fields: ['task_type_id'] },
+    { fields: ['due_date'] },
     { fields: ['taken_by'] },
     { fields: ['created_by'] },
-    { fields: ['task_type_id'] },
-    { fields: ['status'] },
-    { fields: ['due_date'] },
-    { fields: ['is_coverage_request'] },
-    { fields: ['created_at'] },
-    { fields: ['updated_at'] }
   ]
 });
 
