@@ -96,11 +96,11 @@ const Task = sequelize.define('Task', {
   indexes: [
     { fields: ['project_id'] },
     { fields: ['status'] },
-    { fields: ['created_at'] },
     { fields: ['task_type_id'] },
     { fields: ['due_date'] },
     { fields: ['taken_by'] },
     { fields: ['created_by'] },
+    { fields: ['created_at'] },
   ]
 });
 

@@ -14,13 +14,27 @@ const TaskType = sequelize.define('TaskType', {
       len: [2, 100],
       notEmpty: true
     }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'created_at',
+    comment: 'Fecha de creación del tipo de tarea'
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'updated_at',
+    comment: 'Fecha de última actualización del tipo de tarea'
   }
 }, {
   tableName: 'task_types',
-  timestamps: false,
+  timestamps: true,
   underscored: true,
   indexes: [
-    { fields: ['title'] }
+    { fields: ['title'] },
+    { fields: ['created_at'] },
+    { fields: ['updated_at'] }
   ]
 });
 

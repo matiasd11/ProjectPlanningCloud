@@ -51,7 +51,6 @@ const Commitment = sequelize.define('Commitment', {
     { fields: ['ong_id'] },
     { fields: ['status'] },
     { fields: ['created_at'] },
-    { fields: ['updated_at'] }
   ]
 });
 
