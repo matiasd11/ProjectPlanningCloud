@@ -44,10 +44,14 @@ const Commitment = sequelize.define('Commitment', {
   }
 }, {
   tableName: 'commitments',
+  timestamps: true,
+  underscored: true,
   indexes: [
     { fields: ['task_id'] },
     { fields: ['ong_id'] },
-    { fields: ['status'] }
+    { fields: ['status'] },
+    { fields: ['created_at'] },
+    { fields: ['updated_at'] }
   ]
 });
 

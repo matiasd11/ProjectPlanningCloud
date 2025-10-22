@@ -47,7 +47,6 @@ const Task = sequelize.define('Task', {
       min: 0
     }
   },
-  // Simplified fields (removed foreign key constraints)
   projectId: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -80,6 +79,8 @@ const Task = sequelize.define('Task', {
   }
 }, {
   tableName: 'tasks',
+  timestamps: true,
+  underscored: true,
   indexes: [
     { fields: ['project_id'] },
     { fields: ['taken_by'] },
@@ -87,7 +88,9 @@ const Task = sequelize.define('Task', {
     { fields: ['task_type_id'] },
     { fields: ['status'] },
     { fields: ['due_date'] },
-    { fields: ['is_coverage_request'] }
+    { fields: ['is_coverage_request'] },
+    { fields: ['created_at'] },
+    { fields: ['updated_at'] }
   ]
 });
 

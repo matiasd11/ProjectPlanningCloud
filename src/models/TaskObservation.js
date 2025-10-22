@@ -53,6 +53,8 @@ const TaskObservation = sequelize.define('TaskObservation', {
   }
 }, {
   tableName: 'task_observations',
+  timestamps: true,
+  underscored: true,
   indexes: [
     { fields: ['task_id'] },
     { fields: ['created_by'] },

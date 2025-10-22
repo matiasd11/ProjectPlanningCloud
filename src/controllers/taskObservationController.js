@@ -42,7 +42,7 @@ const taskObservationController = {
       const taskObservation = await TaskObservation.create({
         taskId: parseInt(taskId),
         observations: observations.trim(),
-        createdBy: req.user?.id || null // Si tienes info del usuario autenticado
+        createdBy: req.user?.id || null
       });
 
       // Obtener la observación con información adicional

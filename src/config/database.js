@@ -17,6 +17,10 @@ const sequelize = process.env.DATABASE_URL
         min: 0,
         acquire: 30000,
         idle: 10000
+      },
+      define: {
+        timestamps: true,
+        underscored: true
       }
     })
   : new Sequelize(
@@ -33,6 +37,10 @@ const sequelize = process.env.DATABASE_URL
           min: 0,
           acquire: 30000,
           idle: 10000
+        },
+        define: {
+          timestamps: true,
+          underscored: true
         }
       }
     );
@@ -43,7 +51,6 @@ const connectDB = async () => {
     console.log('✅ Database connection established successfully');
     
     if (process.env.NODE_ENV !== 'test') {
-      // Crear solo las tablas que necesitamos, sin foreign key constraints problemáticas
       await sequelize.sync({ force: false, alter: false });
       console.log('✅ Database synchronized');
     }
