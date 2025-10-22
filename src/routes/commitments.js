@@ -184,7 +184,7 @@ router.post('/', authenticateToken, commitmentController.createCommitment);
  * @swagger
  * /api/commitments/assign:
  *   post:
- *     summary: Asignar compromiso a una tarea.
+ *     summary: Asignar compromiso a una tarea
  *     description: Método que permite a una ONG Principal seleccionar y asignar a una ONG Colaboradora un pedido de colaboración para una tarea especifica de su proyecto.
  *     tags: [Commitments]
  *     security:
@@ -284,7 +284,7 @@ router.post('/assign', authenticateToken, commitmentController.assignCommitmentT
  * @swagger
  * /api/commitments/done:
  *   post:
- *     summary: Marcar un compromiso como realizado.
+ *     summary: Marcar un compromiso como realizado
  *     description: Método 5 - Método que permite a una ONG marcar un compromiso como realizado.
  *     tags: [Commitments]
  *     security:
@@ -377,7 +377,7 @@ router.post('/done', authenticateToken, commitmentController.commitmentDone);
  * @swagger
  * /api/commitments/task/{taskId}:
  *   get:
- *     summary: Recuperar compromisos de una tarea.
+ *     summary: Recuperar compromisos de una tarea
  *     description: Método que permite recuperar todos los compromisos asociados a una tarea de un proyecto de una ONG específica.
  *     tags: [Commitments]
  *     security:
@@ -441,125 +441,6 @@ router.post('/done', authenticateToken, commitmentController.commitmentDone);
  *                   example: "Database connection failed"
  */
 router.get('/task/:taskId', authenticateToken, commitmentController.getCommitmentsByTask);
-
-
-// /**
-//  * @swagger
-//  * /api/commitments:
-//  *   get:
-//  *     summary: Recuperar compromisos.
-//  *     description: Método que permite recuperar todos los compromisos generados por ONGs Colaboradoras.
-//  *     tags: [Commitments]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     responses:
-//  *       200:
-//  *         description: Lista de commitments obtenida exitosamente
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/CommitmentsListResponse'
-//  *       401:
-//  *         description: Token de autenticación inválido o faltante
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Token de autenticación requerido"
-//  *       500:
-//  *         description: Error interno del servidor
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Error al obtener los commitments"
-//  *                 error:
-//  *                   type: string
-//  *                   example: "Database connection failed"
-//  */
-router.get('/', authenticateToken, commitmentController.getAllCommitments);
-
-
-// /**
-//  * @swagger
-//  * /api/commitments/project/{projectId}:
-//  *   get:
-//  *     summary: Obtener commitments de un proyecto específico
-//  *     description: Retorna todos los commitments asociados a las tareas de un proyecto específico
-//  *     tags: [Commitments]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: projectId
-//  *         required: true
-//  *         description: ID del proyecto
-//  *         schema:
-//  *           type: integer
-//  *           example: 1
-//  *     responses:
-//  *       200:
-//  *         description: Lista de commitments del proyecto obtenida exitosamente
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/CommitmentsListResponse'
-//  *       400:
-//  *         description: projectId requerido
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "projectId requerido"
-//  *       401:
-//  *         description: Token de autenticación inválido o faltante
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Token de autenticación requerido"
-//  *       500:
-//  *         description: Error interno del servidor
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Error al obtener los commitments del proyecto"
-//  *                 error:
-//  *                   type: string
-//  *                   example: "Database connection failed"
-//  */
-router.get('/project/:projectId', authenticateToken, commitmentController.getCommitmentsByProject);
 
 
 module.exports = router;

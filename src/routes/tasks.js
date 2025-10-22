@@ -163,7 +163,7 @@ const router = express.Router();
  * @swagger
  * /api/tasks/project/{projectId}:
  *   get:
- *     summary: Obtener todas las tareas de un proyecto específico.
+ *     summary: Obtener todas las tareas de un proyecto específico
  *     description: Método 3 - Método que permite recuperar todos los pedidos de colaboración asociados a un proyecto determinado.
  *     tags: [Tasks]
  *     security:
@@ -254,7 +254,7 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
  * @swagger
  * /api/tasks/project/{projectId}/unassigned:
  *   get:
- *     summary: Obtener todas las tareas sin asignar de un proyecto específico.
+ *     summary: Obtener todas las tareas sin asignar de un proyecto específico
  *     description: Método 3 - Método que permite recuperar todos los pedidos de colaboración sin asignar que tiene un proyecto dado.
  *     tags: [Tasks]
  *     security:
@@ -341,14 +341,11 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
 router.get('/project/:projectId/unassigned', authenticateToken, taskController.getUnassignedTasksByProject);
 
 
-router.get('/', optionalAuth, taskController.getAllTasks); 
-
-
 /**
  * @swagger
  * /api/tasks/bulk:
  *   post:
- *     summary: Crear múltiples tareas para un proyecto específico.
+ *     summary: Crear múltiples tareas para un proyecto específico
  *     description: Método 2 - Método que permite cargar en el cloud pedidos de colaboración asociados a un proyecto determinado.
  *     tags: [Tasks]
  *     security:
@@ -410,83 +407,6 @@ router.get('/', optionalAuth, taskController.getAllTasks);
  *                   example: "Database connection failed"
  */
 router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
-
-
-// /**
-//  * @swagger
-//  * /api/tasks:
-//  *   post:
-//  *     summary: Crear una nueva tarea
-//  *     description: Método 2 - Método que permite cargar en el cloud un pedido de colaboración asociado a un proyecto determinado.
-//  *     tags: [Tasks]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             $ref: '#/components/schemas/CreateTaskRequest'
-//  *     responses:
-//  *       201:
-//  *         description: Tarea creada exitosamente
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/TaskResponse'
-//  *       400:
-//  *         description: Datos de entrada inválidos
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Error al crear la tarea"
-//  *                 error:
-//  *                   type: string
-//  *                   example: "Validation error"
-//  *       401:
-//  *         description: Token de autenticación inválido o faltante
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Token de autenticación requerido"
-//  *       500:
-//  *         description: Error interno del servidor
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                   example: false
-//  *                 message:
-//  *                   type: string
-//  *                   example: "Error interno del servidor"
-//  *                 error:
-//  *                   type: string
-//  *                   example: "Database connection failed"
-//  */
-router.post('/', authenticateToken, taskController.createTask);
-
-
-router.put('/:id', authenticateToken, taskController.updateTask);            
-
-
-router.delete('/:id', authenticateToken, taskController.deleteTask);         
 
 
 module.exports = router;
