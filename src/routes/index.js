@@ -3,6 +3,7 @@ const tasksRoutes = require('./tasks');
 const taskTypesRoutes = require('./taskTypes');
 const authRoutes = require('./auth');
 const commitmentsRoutes = require('./commitments');
+const taskObservationsRoutes = require('./taskObservations');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.use('/tasks', tasksRoutes);
 router.use('/task-types', taskTypesRoutes);
 router.use('/auth', authRoutes);
 router.use('/commitments', commitmentsRoutes);
+router.use('/task-observations', taskObservationsRoutes);
 
 // Ruta de salud del API
 router.get('/health', (req, res) => {

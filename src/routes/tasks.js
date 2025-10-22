@@ -22,7 +22,7 @@ const router = express.Router();
  *           example: "Implementar autenticación JWT"
  *         status:
  *           type: string
- *           enum: [todo, in_progress, review, done, cancelled]
+ *           enum: [todo, in_progress, done]
  *           example: "todo"
  *         due_date:
  *           type: string
@@ -79,7 +79,7 @@ const router = express.Router();
  *           example: "Implementar autenticación JWT con refresh tokens"
  *         status:
  *           type: string
- *           enum: [todo, in_progress, review, done, cancelled]
+ *           enum: [todo, in_progress, done]
  *           default: "todo"
  *           example: "todo"
  *         due_date:
@@ -195,7 +195,7 @@ const router = express.Router();
  *         description: Filtrar por estado de la tarea
  *         schema:
  *           type: string
- *           enum: [todo, in_progress, review, done, cancelled]
+ *           enum: [todo, in_progress, done]
  *           example: "todo"
  *     responses:
  *       200:
@@ -286,7 +286,7 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
  *         description: Filtrar por estado de la tarea
  *         schema:
  *           type: string
- *           enum: [todo, in_progress, review, done, cancelled]
+ *           enum: [todo, in_progress, done]
  *           example: "todo"
  *     responses:
  *       200:
@@ -489,5 +489,4 @@ router.put('/:id', authenticateToken, taskController.updateTask);
 router.delete('/:id', authenticateToken, taskController.deleteTask);         
 
 
-module.exports = router;
 module.exports = router;

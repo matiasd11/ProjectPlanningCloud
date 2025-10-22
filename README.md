@@ -117,7 +117,7 @@ DELETE /api/tasks/:id      # Eliminar tarea
 ### Parámetros de consulta para Tasks:
 - `page`: Número de página (default: 1)
 - `limit`: Elementos por página (default: 10)
-- `status`: Filtrar por estado (todo, in_progress, review, done, cancelled)
+- `status`: Filtrar por estado (todo, in_progress, done)
 - `projectId`: Filtrar por ID del proyecto
 
 ## 📊 Estructura de Datos
