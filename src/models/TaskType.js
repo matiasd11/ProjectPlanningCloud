@@ -17,7 +17,7 @@ const TaskType = sequelize.define('TaskType', {
   }
 }, {
   tableName: 'task_types',
-  timestamps: true,
+  timestamps: false,
   underscored: true,
   indexes: [
     { fields: ['title'] }
