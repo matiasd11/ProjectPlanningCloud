@@ -9,6 +9,7 @@
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:seed": "npx sequelize-cli db:seed:all",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npm run db:migrate && npm run db:seed",
+    "seed": "node src/scripts/seed.js",
     "test": "jest",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix"
