@@ -45,20 +45,31 @@ const sequelize = process.env.DATABASE_URL
       }
     );
 
-const connectDB = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ Database connection established successfully');
-    
-    if (process.env.NODE_ENV !== 'test') {
-      await sequelize.sync({ force: true, alter: true });
-      console.log('✅ Database synchronized');
+const connectDB = async (retries = 10, delay = 5000) => {
+  while (retries) {
+    try {
+      console.log('🔄 Attempting to connect to the database...');
+      await sequelize.authenticate();
+      console.log('✅ Database connection established successfully');
+
+      if (process.env.NODE_ENV !== 'test') {
+        await sequelize.sync({ force: false, alter: true });
+        console.log('✅ Database synchronized');
+      }
+
+      return; // conexión exitosa → salir
+    } catch (error) {
+      console.error(`❌ Database connection failed: ${error.message}`);
+      retries -= 1;
+      if (!retries) {
+        console.error('❌ All retries exhausted. Exiting.');
+        process.exit(1);
+      }
+      console.log(`⏳ Retrying in ${delay / 1000}s... (${retries} attempts left)`);
+      await new Promise(res => setTimeout(res, delay));
     }
-  } catch (error) {
-    console.error('❌ Unable to connect to the database:', error);
-    console.error('Error details:', error.message);
-    process.exit(1);
   }
 };
+
 
 module.exports = { sequelize, connectDB };

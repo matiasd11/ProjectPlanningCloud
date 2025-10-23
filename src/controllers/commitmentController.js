@@ -65,7 +65,7 @@ const commitmentController = {
   // Crear un nuevo commitment
   createCommitment: async (req, res) => {
     try {
-      const { taskId, ongId, status, description } = req.body;
+      const { taskId, ongId, description } = req.body;
       if (!taskId || !ongId) {
         return res.status(400).json({
           success: false,
@@ -73,7 +73,7 @@ const commitmentController = {
         });
       }
       // Permitir varios commitments por tarea
-      const commitment = await Commitment.create({ taskId, ongId, status, description });
+      const commitment = await Commitment.create({ taskId, ongId, description });
       res.status(201).json({ success: true, data: commitment });
     } catch (error) {
       console.error('Error creando commitment:', error);

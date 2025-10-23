@@ -16,39 +16,36 @@ const router = express.Router();
  *           example: 1
  *         title:
  *           type: string
- *           example: "Desarrollar funcionalidad de login"
+ *           example: "Nivelación del terreno"
  *         description:
  *           type: string
- *           example: "Implementar autenticación JWT"
+ *           example: "Preparar el suelo para la construcción del centro comunitario, asegurando el drenaje y la estabilidad."
  *         status:
  *           type: string
  *           enum: [todo, in_progress, done]
  *           example: "todo"
- *         due_date:
+ *         dueDate:
  *           type: string
  *           format: date-time
  *           example: "2024-12-31T23:59:59Z"
- *         estimated_hours:
+ *         estimatedHours:
  *           type: number
  *           format: decimal
  *           example: 8.5
- *         actual_hours:
+ *         actualHours:
  *           type: number
  *           format: decimal
  *           example: 6.0
- *         project_id:
+ *         projectId:
  *           type: integer
  *           example: 1
- *         taken_by:
+ *         takenBy:
  *           type: integer
  *           example: 3
- *         created_by:
+ *         createdBy:
  *           type: integer
  *           example: 1
- *         task_type_id:
- *           type: integer
- *           example: 2
- *         is_coverage_request:
+ *         isCoverageRequest:
  *           type: boolean
  *           example: true
  *         createdAt:
@@ -62,8 +59,80 @@ const router = express.Router();
  *           properties:
  *             id:
  *               type: integer
+ *               example: 5
  *             title:
  *               type: string
+ *               example: "Colocación de cimientos"
+ * 
+ * 
+ *     TasksListResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Task'
+ *           example:
+ *             - id: 1
+ *               title: "Instalación de paneles solares"
+ *               description: "Montar 6 paneles fotovoltaicos y conectar al sistema comunitario."
+ *               status: "todo"
+ *               dueDate: "2024-12-31T23:59:59Z"
+ *               estimatedHours: 8.5
+ *               actualHours: null
+ *               projectId: 7
+ *               takenBy: 3
+ *               createdBy: 1
+ *               isCoverageRequest: true
+ *               createdAt: "2024-01-15T10:30:00Z"
+ *               updatedAt: "2024-01-15T10:30:00Z"
+ *               taskType:
+ *                 id: 2
+ *                 title: "Instalación de paneles solares o eólicos"
+ *             - id: 2
+ *               title: "Instalación de luminarias LED"
+ *               description: "Colocar luces de bajo consumo en la plaza y calles principales."
+ *               status: "todo"
+ *               dueDate: "2024-11-30T23:59:59Z"
+ *               estimatedHours: 12.0
+ *               actualHours: 6.5
+ *               projectId: 7
+ *               takenBy: 1
+ *               createdBy: 1
+ *               isCoverageRequest: false
+ *               createdAt: "2024-01-14T09:15:00Z"
+ *               updatedAt: "2024-01-16T14:20:00Z"
+ *               taskType:
+ *                 id: 2
+ *                 title: "Instalación de paneles solares o eólicos"
+ *         pagination:
+ *           type: object
+ *           properties:
+ *             page:
+ *               type: integer
+ *               example: 1
+ *               description: "Página actual"
+ *             limit:
+ *               type: integer
+ *               example: 10
+ *               description: "Cantidad de elementos por página"
+ *             total:
+ *               type: integer
+ *               example: 25
+ *               description: "Total de elementos disponibles"
+ *             totalPages:
+ *               type: integer
+ *               example: 3
+ *               description: "Total de páginas disponibles"
+ *           example:
+ *             page: 1
+ *             limit: 10
+ *             total: 25
+ *             totalPages: 3
+ *     
  *     
  *     CreateTaskRequest:
  *       type: object
@@ -72,35 +141,30 @@ const router = express.Router();
  *         title:
  *           type: string
  *           description: Título de la tarea
- *           example: "Desarrollar funcionalidad de login"
+ *           example: "Colocación de cimientos"
  *         description:
  *           type: string
  *           description: Descripción detallada de la tarea
- *           example: "Implementar autenticación JWT con refresh tokens"
- *         status:
- *           type: string
- *           enum: [todo, in_progress, done]
- *           default: "todo"
- *           example: "todo"
- *         due_date:
+ *           example: "Ejecutar la base estructural con materiales donados y asistencia técnica."
+ *         dueDate:
  *           type: string
  *           format: date-time
  *           description: Fecha límite de la tarea
  *           example: "2024-12-31T23:59:59Z"
- *         estimated_hours:
+ *         estimatedHours:
  *           type: number
  *           format: decimal
  *           description: Horas estimadas para completar la tarea
  *           example: 8.5
- *         project_id:
+ *         projectId:
  *           type: integer
  *           description: ID del proyecto al que pertenece la tarea
  *           example: 1
- *         taken_by:
+ *         takenBy:
  *           type: integer
  *           description: ID de la ONG que se hace cargo de la tarea
  *           example: 3
- *         created_by:
+ *         createdBy:
  *           type: integer
  *           description: ID del usuario que crea la tarea
  *           example: 1
@@ -108,7 +172,7 @@ const router = express.Router();
  *           type: integer
  *           description: ID del tipo de tarea
  *           example: 2
- *         is_coverage_request:
+ *         isCoverageRequest:
  *           type: boolean
  *           description: Si es una solicitud de cobertura
  *           default: true
@@ -124,24 +188,24 @@ const router = express.Router();
  *             $ref: '#/components/schemas/CreateTaskRequest'
  *           minItems: 1
  *           example:
- *             - title: "Tarea 1"
+ *             - title: "Pintura exterior del edificio"
+ *               description: "Aplicar pintura ecológica en muros exteriores para mejorar la imagen y proteger las superficies."
+ *               dueDate: "2025-12-31T23:59:59Z"
+ *               estimatedHours: 120
+ *               projectId: 1
+ *               takenBy: 3
+ *               createdBy: 1
  *               taskTypeId: 1
- *               project_id: 1
- *             - title: "Tarea 2"
+ *               isCoverageRequest: true
+ *             - title: "Reparación de techos"
+ *               description: "Sustituir chapas dañadas y reforzar la estructura ante lluvias."
+ *               dueDate: "2026-05-31T23:59:59Z"
+ *               estimatedHours: 190
+ *               projectId: 1
+ *               takenBy: 1
+ *               createdBy: 1
  *               taskTypeId: 2
- *               project_id: 1
- *     
- *     TaskResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: true
- *         data:
- *           $ref: '#/components/schemas/Task'
- *         message:
- *           type: string
- *           example: "Tarea creada exitosamente"
+ *               isCoverageRequest: false
  *     
  *     MultipleTasksResponse:
  *       type: object
@@ -153,9 +217,42 @@ const router = express.Router();
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/Task'
+ *           example:
+ *             - id: 1
+ *               title: "Pintura exterior del edificio"
+ *               description: "Aplicar pintura ecológica en muros exteriores para mejorar la imagen y proteger las superficies."
+ *               status: "todo"
+ *               dueDate: "2025-12-31T23:59:59Z"
+ *               estimatedHours: 120
+ *               actualHours: 0
+ *               projectId: 1
+ *               takenBy: 3
+ *               createdBy: 1
+ *               isCoverageRequest: true
+ *               createdAt: "2025-01-15T10:30:00Z"
+ *               updatedAt: "2025-01-15T10:30:00Z"
+ *               taskType:
+ *                 id: 1
+ *                 title: "Pintura y acabados"
+ *             - id: 2
+ *               title: "Reparación de techos"
+ *               description: "Sustituir chapas dañadas y reforzar la estructura ante lluvias."
+ *               status: "todo"
+ *               dueDate: "2026-05-31T23:59:59Z"
+ *               estimatedHours: 190
+ *               actualHours: 0
+ *               projectId: 1
+ *               takenBy: 8
+ *               createdBy: 8
+ *               isCoverageRequest: false
+ *               createdAt: "2025-01-15T10:30:00Z"
+ *               updatedAt: "2025-01-15T10:30:00Z"
+ *               taskType:
+ *                 id: 2
+ *                 title: "Reparaciones estructurales"
  *         message:
  *           type: string
- *           example: "3 tareas creadas exitosamente"
+ *           example: "2 tareas creadas exitosamente"
  */
 
 
@@ -190,13 +287,6 @@ const router = express.Router();
  *           type: integer
  *           default: 10
  *           example: 10
- *       - in: query
- *         name: status
- *         description: Filtrar por estado de la tarea
- *         schema:
- *           type: string
- *           enum: [todo, in_progress, done]
- *           example: "todo"
  *     responses:
  *       200:
  *         description: Lista de tareas del proyecto obtenida exitosamente
@@ -281,13 +371,6 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
  *           type: integer
  *           default: 10
  *           example: 10
- *       - in: query
- *         name: status
- *         description: Filtrar por estado de la tarea
- *         schema:
- *           type: string
- *           enum: [todo, in_progress, done]
- *           example: "todo"
  *     responses:
  *       200:
  *         description: Lista de tareas sin asignar obtenida exitosamente
@@ -375,7 +458,7 @@ router.get('/project/:projectId/unassigned', authenticateToken, taskController.g
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Se requiere un array de tareas válido"
+ *                   example: "Los datos enviados no son válidos"
  *       401:
  *         description: Token de autenticación inválido o faltante
  *         content:

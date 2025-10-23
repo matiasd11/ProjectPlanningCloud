@@ -42,6 +42,7 @@ const Task = sequelize.define('Task', {
   },
   actualHours: {
     type: DataTypes.DECIMAL(5, 2),
+    defaultValue: 0,
     field: 'actual_hours',
     validate: {
       min: 0

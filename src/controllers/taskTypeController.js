@@ -5,7 +5,7 @@ const taskTypeController = {
   getAllTaskTypes: async (req, res) => {
     try {
       const taskTypes = await TaskType.findAll({
-        order: [['title', 'ASC']]
+        order: [['id', 'ASC']]
       });
 
       res.json({

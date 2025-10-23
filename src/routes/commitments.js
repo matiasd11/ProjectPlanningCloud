@@ -26,11 +26,11 @@ const router = express.Router();
  *           example: "pending"
  *         description:
  *           type: string
- *           example: "Nos comprometemos a completar esta tarea en 2 semanas"
- *         created_at:
+ *           example: "Aportaremos los fondos necesarios para cubrir la compra de materiales de construcción."
+ *         createdAt:
  *           type: string
  *           format: date-time
- *         updated_at:
+ *         updatedAt:
  *           type: string
  *           format: date-time
  *     
@@ -44,17 +44,12 @@ const router = express.Router();
  *           example: 5
  *         ongId:
  *           type: integer
- *           description: ID de la ONG
+ *           description: ID de la ONG Colaboradora
  *           example: 3
- *         status:
- *           type: string
- *           enum: [pending, approved, rejected, done]
- *           default: "pending"
- *           example: "pending"
  *         description:
  *           type: string
  *           description: Descripción opcional del compromiso
- *           example: "Nos comprometemos a completar esta tarea en 2 semanas"
+ *           example: "Nos comprometemos a financiar esta etapa con un aporte mensual durante tres meses."
  *     
  *     AssignCommitmentRequest:
  *       type: object
@@ -91,7 +86,7 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Commitment'
  *             task:
  *               type: object
- *               description: Información de la tarea (solo en algunos endpoints)
+ *               description: Información de la tarea
  *     
  *     CommitmentsListResponse:
  *       type: object
@@ -208,6 +203,16 @@ router.post('/', authenticateToken, commitmentController.createCommitment);
  *                   example: true
  *                 data:
  *                   $ref: '#/components/schemas/Commitment'
+ *             example:
+ *               success: true
+ *               data:
+ *                 id: 1
+ *                 taskId: 5
+ *                 ongId: 3
+ *                 status: "approved"
+ *                 description: "Nos comprometemos a financiar esta etapa con un aporte mensual durante tres meses."
+ *                 createdAt: "2024-01-15T10:30:00Z"
+ *                 updatedAt: "2024-01-15T14:20:00Z"
  *       400:
  *         description: Datos de entrada inválidos
  *         content:
@@ -314,6 +319,77 @@ router.post('/assign', authenticateToken, commitmentController.assignCommitmentT
  *                     task:
  *                       type: object
  *                       description: Información de la tarea actualizada
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                           example: 5
+ *                         title:
+ *                           type: string
+ *                           example: "Nivelación del terreno"
+ *                         description:
+ *                           type: string
+ *                           example: "Preparar el suelo para la construcción del centro comunitario"
+ *                         status:
+ *                           type: string
+ *                           enum: [todo, in_progress, done]
+ *                           example: "done"
+ *                         dueDate:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-12-31T23:59:59Z"
+ *                         estimatedHours:
+ *                           type: number
+ *                           format: decimal
+ *                           example: 8.5
+ *                         actualHours:
+ *                           type: number
+ *                           format: decimal
+ *                           example: 6.0
+ *                         projectId:
+ *                           type: integer
+ *                           example: 1
+ *                         takenBy:
+ *                           type: integer
+ *                           example: 3
+ *                         createdBy:
+ *                           type: integer
+ *                           example: 1
+ *                         isCoverageRequest:
+ *                           type: boolean
+ *                           example: true
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-15T10:30:00Z"
+ *                         updatedAt:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-16T14:20:00Z"
+ *             example:
+ *               success: true
+ *               data:
+ *                 commitment:
+ *                   id: 1
+ *                   taskId: 5
+ *                   ongId: 3
+ *                   status: "done"
+ *                   description: "Nos comprometimos a financiar esta etapa con un aporte mensual durante tres meses."
+ *                   createdAt: "2024-01-15T10:30:00Z"
+ *                   updatedAt: "2024-01-16T14:20:00Z"
+ *                 task:
+ *                   id: 5
+ *                   title: "Nivelación del terreno"
+ *                   description: "Preparar el suelo para la construcción del centro comunitario, asegurando el drenaje y la estabilidad."
+ *                   status: "done"
+ *                   dueDate: "2024-12-31T23:59:59Z"
+ *                   estimatedHours: 8.5
+ *                   actualHours: 6.0
+ *                   projectId: 1
+ *                   takenBy: 3
+ *                   createdBy: 1
+ *                   isCoverageRequest: true
+ *                   createdAt: "2024-01-15T10:30:00Z"
+ *                   updatedAt: "2024-01-16T14:20:00Z"
  *       400:
  *         description: Datos de entrada inválidos
  *         content:

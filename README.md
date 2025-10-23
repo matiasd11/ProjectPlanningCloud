@@ -125,8 +125,8 @@ DELETE /api/tasks/:id      # Eliminar tarea
 ### TaskType
 ```json
 {
-  "id": 1,
-  "title": "Desarrollo",
+  "id": 2,
+  "title": "Instalación de paneles solares o eólicos",
   "createdAt": "2023-10-10T10:00:00.000Z",
   "updatedAt": "2023-10-10T10:00:00.000Z"
 }
@@ -136,22 +136,21 @@ DELETE /api/tasks/:id      # Eliminar tarea
 ```json
 {
   "id": 1,
-  "title": "Implementar API de usuarios",
-  "description": "Crear endpoints CRUD para gestión de usuarios",
+  "title": "Instalación de tanque de agua",
+  "description": "Montar y conectar tanque de 1000 L para abastecer a la comunidad.",
   "status": "todo",
   "dueDate": "2023-12-01T00:00:00.000Z",
   "estimatedHours": 8.5,
-  "actualHours": null,
+  "actualHours": 0,
   "projectId": 1,
-  "takenBy": null,
   "createdBy": 1,
   "taskTypeId": 1,
   "isCoverageRequest": false,
   "createdAt": "2023-10-10T10:00:00.000Z",
   "updatedAt": "2023-10-10T10:00:00.000Z",
   "taskType": {
-    "id": 1,
-    "title": "Desarrollo"
+      "id": 2,
+      "title": "Instalación de paneles solares o eólicos",
   }
 }
 ```

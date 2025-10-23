@@ -19,10 +19,10 @@ const router = express.Router();
  *           example: 1
  *         observations:
  *           type: string
- *           example: "Se completó el módulo de autenticación. Falta implementar la validación de permisos."
+ *           example: "El avance reportado es menor al esperado para esta etapa."
  *         resolution:
  *           type: string
- *           example: "Se implementó la validación de permisos usando middleware de autorización."
+ *           example: null
  *         createdBy:
  *           type: integer
  *           example: 1
@@ -56,7 +56,7 @@ const router = express.Router();
  *         observations:
  *           type: string
  *           description: Observaciones sobre el progreso de la tarea
- *           example: "Se completó el módulo de autenticación. Falta implementar la validación de permisos."
+ *           example: "El avance reportado es menor al esperado para esta etapa."
  *           maxLength: 2000
  *     
  *     ResolveObservationRequest:
@@ -66,7 +66,7 @@ const router = express.Router();
  *         resolution:
  *           type: string
  *           description: Resolución o respuesta a la observación
- *           example: "Se implementó la validación de permisos usando middleware de autorización."
+ *           example: "Se asignarán dos voluntarios adicionales para acelerar la ejecución y cumplir los tiempos."
  *           maxLength: 2000
  *     
  *     ObservationsListResponse:
@@ -79,6 +79,46 @@ const router = express.Router();
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/TaskObservation'
+ *           example:
+ *             - id: 1
+ *               taskId: 1
+ *               observations: "El avance reportado es menor al esperado para esta etapa. Los materiales no han llegado según lo programado."
+ *               resolution: null
+ *               createdBy: 1
+ *               resolvedBy: null
+ *               resolvedAt: null
+ *               createdAt: "2024-01-15T10:30:00Z"
+ *               updatedAt: "2024-01-15T10:30:00Z"
+ *               task:
+ *                 id: 1
+ *                 title: "Nivelación del terreno"
+ *                 status: "in_progress"
+ *             - id: 2
+ *               taskId: 1
+ *               observations: "Se requiere verificación adicional de la calidad del suelo antes de continuar con la construcción."
+ *               resolution: "Se ha contratado un ingeniero geotécnico para realizar un estudio completo del suelo. Los resultados estarán disponibles en 3 días hábiles."
+ *               createdBy: 2
+ *               resolvedBy: 1
+ *               resolvedAt: "2024-01-18T11:45:00Z"
+ *               createdAt: "2024-01-16T14:20:00Z"
+ *               updatedAt: "2024-01-18T11:45:00Z"
+ *               task:
+ *                 id: 1
+ *                 title: "Nivelación del terreno"
+ *                 status: "in_progress"
+ *             - id: 3
+ *               taskId: 2
+ *               observations: "Los voluntarios reportan dificultades con el equipo eléctrico proporcionado. Se necesita capacitación adicional."
+ *               resolution: null
+ *               createdBy: 3
+ *               resolvedBy: null
+ *               resolvedAt: null
+ *               createdAt: "2024-01-17T09:15:00Z"
+ *               updatedAt: "2024-01-17T09:15:00Z"
+ *               task:
+ *                 id: 2
+ *                 title: "Instalación de sistema eléctrico"
+ *                 status: "todo"
  *         pagination:
  *           type: object
  *           properties:
@@ -90,10 +130,15 @@ const router = express.Router();
  *               example: 10
  *             total:
  *               type: integer
- *               example: 5
+ *               example: 3
  *             totalPages:
  *               type: integer
  *               example: 1
+ *           example:
+ *             page: 1
+ *             limit: 10
+ *             total: 3
+ *             totalPages: 1
  */
 
 
@@ -126,13 +171,6 @@ const router = express.Router();
  *         schema:
  *           type: integer
  *           default: 10
- *       - in: query
- *         name: resolved
- *         description: Filtrar por estado de resolución
- *         schema:
- *           type: string
- *           enum: [true, false]
- *           example: "false"
  *     responses:
  *       200:
  *         description: Historial de observaciones obtenido exitosamente
@@ -334,6 +372,23 @@ router.post('/task/:taskId', authenticateToken, taskObservationController.create
  *                 message:
  *                   type: string
  *                   example: "Observación resuelta exitosamente"
+ *             example:
+ *               success: true
+ *               data:
+ *                 id: 1
+ *                 taskId: 1
+ *                 observations: "El avance reportado es menor al esperado para esta etapa. Los materiales no han llegado según lo programado."
+ *                 resolution: "Se asignarán dos voluntarios adicionales para acelerar la ejecución y cumplir los tiempos."
+ *                 createdBy: 2
+ *                 resolvedBy: 1
+ *                 resolvedAt: "2024-01-18T15:30:00Z"
+ *                 createdAt: "2024-01-15T10:30:00Z"
+ *                 updatedAt: "2024-01-18T15:30:00Z"
+ *                 task:
+ *                   id: 1
+ *                   title: "Nivelación del terreno"
+ *                   status: "in_progress"
+ *               message: "Observación resuelta exitosamente"
  *       400:
  *         description: Datos de entrada inválidos
  *         content:
