@@ -163,7 +163,7 @@ const router = express.Router();
  * @swagger
  * /api/tasks/project/{projectId}:
  *   get:
- *     summary: Obtener todas las tareas de un proyecto específico
+ *     summary: Recuperar pedidos de colaboración de un proyecto
  *     description: Método 3 - Método que permite recuperar todos los pedidos de colaboración asociados a un proyecto determinado.
  *     tags: [Tasks]
  *     security:
@@ -254,7 +254,7 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
  * @swagger
  * /api/tasks/project/{projectId}/unassigned:
  *   get:
- *     summary: Obtener todas las tareas sin asignar de un proyecto específico
+ *     summary: Recuperar pedidos de colaboración sin asignar de un proyecto
  *     description: Método 3 - Método que permite recuperar todos los pedidos de colaboración sin asignar que tiene un proyecto dado.
  *     tags: [Tasks]
  *     security:
@@ -345,7 +345,7 @@ router.get('/project/:projectId/unassigned', authenticateToken, taskController.g
  * @swagger
  * /api/tasks/bulk:
  *   post:
- *     summary: Crear múltiples tareas para un proyecto específico
+ *     summary: Generar pedidos de colaboración de un proyecto
  *     description: Método 2 - Método que permite cargar en el cloud pedidos de colaboración asociados a un proyecto determinado.
  *     tags: [Tasks]
  *     security:

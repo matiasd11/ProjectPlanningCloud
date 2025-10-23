@@ -110,7 +110,7 @@ const router = express.Router();
  * @swagger
  * /api/commitments:
  *   post:
- *     summary: Crear un compromiso
+ *     summary: Generar compromiso para un pedido de colaboración
  *     description: Método 4 - Método que permita a una ONG comprometerse a realizar un pedido de colaboración determinado.
  *     tags: [Commitments]
  *     security:
@@ -284,7 +284,7 @@ router.post('/assign', authenticateToken, commitmentController.assignCommitmentT
  * @swagger
  * /api/commitments/done:
  *   post:
- *     summary: Marcar un compromiso como realizado
+ *     summary: Marcar compromiso como realizado
  *     description: Método 5 - Método que permite a una ONG marcar un compromiso como realizado.
  *     tags: [Commitments]
  *     security:
@@ -377,7 +377,7 @@ router.post('/done', authenticateToken, commitmentController.commitmentDone);
  * @swagger
  * /api/commitments/task/{taskId}:
  *   get:
- *     summary: Recuperar compromisos de una tarea
+ *     summary: Recuperar compromisos generados para una tarea
  *     description: Método que permite recuperar todos los compromisos asociados a una tarea de un proyecto de una ONG específica.
  *     tags: [Commitments]
  *     security:

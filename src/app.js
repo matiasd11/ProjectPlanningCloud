@@ -51,7 +51,7 @@ const swaggerOptions = {
     info: {
       title: "API Project Planning Cloud",
       version: "1.0.0",
-      description: "Documentación de la API Project Planning Cloud",
+      description: "DSSD - Grupo 2 -Documentación de la API Project Planning Cloud",
     },
     servers: getSwaggerServers(),
     components: {

@@ -101,7 +101,7 @@ const router = express.Router();
  * @swagger
  * /api/task-observations/task/{taskId}:
  *   get:
- *     summary: Obtener observaciones de una tarea específica
+ *     summary: Recuperar historial de observaciones de una tarea
  *     description: Retorna el historial completo de observaciones de una tarea específica
  *     tags: [Task Observations]
  *     security:
@@ -202,7 +202,7 @@ router.get('/task/:taskId', authenticateToken, taskObservationController.getTask
  * @swagger
  * /api/task-observations/task/{taskId}:
  *   post:
- *     summary: Crear observación para una tarea
+ *     summary: Generar observación para una tarea
  *     description: Método 4 - Método que permite agregar observaciones sobre el progreso de una tarea que está en estado 'in_progress'
  *     tags: [Task Observations]
  *     security:
@@ -299,8 +299,8 @@ router.post('/task/:taskId', authenticateToken, taskObservationController.create
  * @swagger
  * /api/task-observations/{observationId}/resolve:
  *   put:
- *     summary: Resolver una observación
- *     description: Agrega una resolución a una observación específica
+ *     summary: Resolver observación de una tarea
+ *     description: Agrega una resolución a una observación específica de una tarea
  *     tags: [Task Observations]
  *     security:
  *       - bearerAuth: []
