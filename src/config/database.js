@@ -1,5 +1,7 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path'); 
 
 // Configuración para usar DATABASE_URL (Render) o variables individuales (local)
 const sequelize = process.env.DATABASE_URL 
@@ -53,6 +55,27 @@ const connectDB = async (retries = 10, delay = 5000) => {
       console.log('✅ Database connection established successfully');
 
       if (process.env.NODE_ENV !== 'test') {
+        try {
+          console.log('🔄 Initializing database with init.sql...');
+          const initSqlPath = path.join(__dirname, '../../init.sql');
+          const initSql = fs.readFileSync(initSqlPath, 'utf8');
+
+          const statements = initSql
+            .split(';')
+            .map(stmt => stmt.trim())
+            .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
+
+          for (const statement of statements) {
+            if (statement.trim()) {
+              await sequelize.query(statement);
+            }
+          }
+
+          console.log('✅ Database initialization completed');
+        } catch (initError) {
+          console.log('ℹ️ Database already initialized or init.sql not found:', initError.message);
+        }
+
         await sequelize.sync({ force: false, alter: true });
         console.log('✅ Database synchronized');
       }
