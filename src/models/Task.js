@@ -22,9 +22,12 @@ const Task = sequelize.define('Task', {
     }
   },
   status: {
-    type: DataTypes.ENUM('todo', 'in_progress', 'done'),
+    type: DataTypes.STRING(20),
+    allowNull: false,
     defaultValue: 'todo',
-    allowNull: false
+    validate: {
+      isIn: [['todo', 'in_progress', 'done']]
+    }
   },
   dueDate: {
     type: DataTypes.DATE,
