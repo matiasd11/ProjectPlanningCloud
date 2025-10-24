@@ -1,0 +1,5 @@
+# Base Postgres
+FROM postgres:15-alpine
+
+# Copiar init.sql dentro del contenedor
+COPY init.sql /docker-entrypoint-initdb.d/init.sql

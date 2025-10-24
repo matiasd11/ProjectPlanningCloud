@@ -21,7 +21,9 @@ services:
     command: npm run dev
 
   postgres:
-    image: postgres:15-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     environment:
       - POSTGRES_DB=projectplanning
       - POSTGRES_USER=postgres
@@ -30,7 +32,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgres_data:
