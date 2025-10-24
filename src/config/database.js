@@ -55,9 +55,6 @@ const connectDB = async (retries = 10, delay = 5000) => {
       if (process.env.NODE_ENV !== 'test') {
         await sequelize.sync({ force: false, alter: true });
         console.log('✅ Database synchronized');
-        
-        const seedData = require('../seeds/seedData');
-        await seedData();
       }
 
       return; // conexión exitosa → salir
