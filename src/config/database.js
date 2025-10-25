@@ -52,25 +52,37 @@ const connectDB = async (retries = 10, delay = 5000) => {
       await sequelize.authenticate();
       console.log('✅ Database connection established successfully');
 
-      // Ejecutar init.sql SOLO en desarrollo local
-      if (process.env.NODE_ENV === 'development') {
+      // Ejecutar init.sql para inicializar datos (desarrollo y producción)
+      if (process.env.NODE_ENV !== 'test') {
         try {
           console.log('🔄 Initializing database with init.sql...');
           const initSqlPath = path.join(__dirname, '../../init.sql');
-          const initSql = fs.readFileSync(initSqlPath, 'utf8');
+          
+          if (!fs.existsSync(initSqlPath)) {
+            console.log('⚠️ init.sql not found. Skipping initialization.');
+          } else {
+            const initSql = fs.readFileSync(initSqlPath, 'utf8');
 
-          const statements = initSql
-            .split(';')
-            .map(stmt => stmt.trim())
-            .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
+            const statements = initSql
+              .split(';')
+              .map(stmt => stmt.trim())
+              .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
 
-          for (const statement of statements) {
-            await sequelize.query(statement);
+            for (const statement of statements) {
+              if (statement.trim()) {
+                try {
+                  await sequelize.query(statement);
+                } catch (err) {
+                  // Ignorar errores de statements que ya existen (ON CONFLICT DO NOTHING)
+                  console.log('ℹ️ Statement skipped:', err.message);
+                }
+              }
+            }
+
+            console.log('✅ Database initialization completed');
           }
-
-          console.log('✅ Database initialization completed');
         } catch (initError) {
-          console.log('ℹ️ init.sql not found or already executed:', initError.message);
+          console.log('ℹ️ Database initialization error:', initError.message);
         }
       }
 
@@ -93,3 +105,6 @@ const connectDB = async (retries = 10, delay = 5000) => {
 };
 
 module.exports = { sequelize, connectDB };
+
+
+
