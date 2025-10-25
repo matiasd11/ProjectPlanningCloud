@@ -1,18 +1,35 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
 const fs = require('fs');
-const path = require('path'); 
+const path = require('path');
+require('dotenv').config();
 
-// Configuración para usar DATABASE_URL (Render) o variables individuales (local)
-const sequelize = process.env.DATABASE_URL 
+// Crear la instancia de Sequelize
+const sequelize = process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: { require: true, rejectUnauthorized: false }
+    },
+    logging: false, // no logea SQL en producción
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    define: {
+      timestamps: true,
+      underscored: true
+    }
+  })
+  : new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+      host: process.env.DB_HOST || 'localhost',
+      port: process.env.DB_PORT || 5432,
       dialect: 'postgres',
-      dialectOptions: {
-        ssl: process.env.NODE_ENV === 'production' ? {
-          require: true,
-          rejectUnauthorized: false
-        } : false
-      },
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
       pool: {
         max: 10,
@@ -24,29 +41,10 @@ const sequelize = process.env.DATABASE_URL
         timestamps: true,
         underscored: true
       }
-    })
-  : new Sequelize(
-      process.env.DB_NAME,
-      process.env.DB_USER,
-      process.env.DB_PASSWORD,
-      {
-        host: process.env.DB_HOST || 'localhost',
-        port: process.env.DB_PORT || 5432,
-        dialect: 'postgres',
-        logging: process.env.NODE_ENV === 'development' ? console.log : false,
-        pool: {
-          max: 10,
-          min: 0,
-          acquire: 30000,
-          idle: 10000
-        },
-        define: {
-          timestamps: true,
-          underscored: true
-        }
-      }
-    );
+    }
+  );
 
+// Función para conectar y opcionalmente inicializar la DB
 const connectDB = async (retries = 10, delay = 5000) => {
   while (retries) {
     try {
@@ -54,7 +52,8 @@ const connectDB = async (retries = 10, delay = 5000) => {
       await sequelize.authenticate();
       console.log('✅ Database connection established successfully');
 
-      if (process.env.NODE_ENV !== 'test') {
+      // Ejecutar init.sql SOLO en desarrollo local
+      if (process.env.NODE_ENV === 'development') {
         try {
           console.log('🔄 Initializing database with init.sql...');
           const initSqlPath = path.join(__dirname, '../../init.sql');
@@ -66,19 +65,18 @@ const connectDB = async (retries = 10, delay = 5000) => {
             .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
 
           for (const statement of statements) {
-            if (statement.trim()) {
-              await sequelize.query(statement);
-            }
+            await sequelize.query(statement);
           }
 
           console.log('✅ Database initialization completed');
         } catch (initError) {
-          console.log('ℹ️ Database already initialized or init.sql not found:', initError.message);
+          console.log('ℹ️ init.sql not found or already executed:', initError.message);
         }
-
-        await sequelize.sync({ force: false, alter: true });
-        console.log('✅ Database synchronized');
       }
+
+      // Sincronizar modelos
+      await sequelize.sync({ force: false, alter: true });
+      console.log('✅ Database synchronized');
 
       return; // conexión exitosa → salir
     } catch (error) {
@@ -93,6 +91,5 @@ const connectDB = async (retries = 10, delay = 5000) => {
     }
   }
 };
-
 
 module.exports = { sequelize, connectDB };
