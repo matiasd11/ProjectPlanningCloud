@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-// Configurar Sequelize según entorno
 const sequelize = process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
@@ -35,31 +34,35 @@ const connectDB = async (retries = 10, delay = 5000) => {
       await sequelize.authenticate();
       console.log('✅ Database connection established successfully');
 
-      // Ejecutar init.sql automáticamente
-      try {
-        console.log('🔄 Running init.sql...');
-        const initSqlPath = path.join(__dirname, '../../init.sql');
-        const initSql = fs.readFileSync(initSqlPath, 'utf8');
+      // Ejecutar init.sql solo en desarrollo local
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          console.log('🔄 Running init.sql...');
+          const initSqlPath = path.join(__dirname, '../../init.sql');
+          if (fs.existsSync(initSqlPath)) {
+            const initSql = fs.readFileSync(initSqlPath, 'utf8');
+            const statements = initSql
+              .split(';')
+              .map(stmt => stmt.trim())
+              .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
 
-        const statements = initSql
-          .split(';')
-          .map(stmt => stmt.trim())
-          .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
-
-        for (const statement of statements) {
-          await sequelize.query(statement);
+            for (const stmt of statements) {
+              await sequelize.query(stmt);
+            }
+            console.log('✅ init.sql executed successfully');
+          } else {
+            console.log('ℹ️ init.sql not found');
+          }
+        } catch (initError) {
+          console.log('⚠️ Error executing init.sql:', initError.message);
         }
-
-        console.log('✅ Database initialization completed');
-      } catch (initError) {
-        console.log('ℹ️ init.sql not found or already executed:', initError.message);
       }
 
-      // Sincronizar modelos Sequelize
+      // Sincronizar modelos
       await sequelize.sync({ force: false, alter: true });
       console.log('✅ Database synchronized');
 
-      return; // conexión exitosa
+      return; // conexión exitosa → salir
     } catch (error) {
       console.error(`❌ Database connection failed: ${error.message}`);
       retries -= 1;
