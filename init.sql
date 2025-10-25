@@ -1,8 +1,12 @@
 -- Script de inicialización para PostgreSQL
 -- Este script se ejecuta automáticamente cuando se crea el contenedor de PostgreSQL
 
+-- Limpiar esquema
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
 -- Crear tabla de tipos de tarea
-CREATE TABLE IF NOT EXISTS task_types (
+CREATE TABLE task_types (
     id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -10,7 +14,7 @@ CREATE TABLE IF NOT EXISTS task_types (
 );
 
 -- Crear tabla de tareas
-CREATE TABLE IF NOT EXISTS tasks (
+CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
     description TEXT,
@@ -28,7 +32,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 );
 
 -- Crear tabla de compromisos
-CREATE TABLE IF NOT EXISTS commitments (
+CREATE TABLE commitments (
     id SERIAL PRIMARY KEY,
     task_id INTEGER NOT NULL,
     ong_id INTEGER NOT NULL,
@@ -38,8 +42,8 @@ CREATE TABLE IF NOT EXISTS commitments (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla de observaciones de tareas
-CREATE TABLE IF NOT EXISTS task_observations (
+-- Crear tabla de observaciones
+CREATE TABLE task_observations (
     id SERIAL PRIMARY KEY,
     task_id INTEGER NOT NULL,
     observations TEXT NOT NULL,
