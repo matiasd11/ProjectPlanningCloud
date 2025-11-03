@@ -3,16 +3,17 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// ✅ Configurar Sequelize con Supabase
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: { require: true, rejectUnauthorized: false }
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // importante para Render/Supabase
+    },
   },
-  host: 'db.tawhizjvtwpsjpjdzhal.supabase.co',
-  port: 5432,
   logging: false,
 });
-
 
 const connectDB = async (retries = 10, delay = 5000) => {
   while (retries) {
@@ -21,12 +22,12 @@ const connectDB = async (retries = 10, delay = 5000) => {
       await sequelize.authenticate();
       console.log('✅ Database connection established successfully');
 
-      // Ejecutar init.sql solo en desarrollo local
+      // 🚫 Solo ejecutar init.sql si estamos en desarrollo local
       if (process.env.NODE_ENV === 'development') {
-        try {
+        const initSqlPath = path.join(__dirname, '../../init.sql');
+        if (fs.existsSync(initSqlPath)) {
           console.log('🔄 Running init.sql...');
-          const initSqlPath = path.join(__dirname, '../../init.sql');
-          if (fs.existsSync(initSqlPath)) {
+          try {
             const initSql = fs.readFileSync(initSqlPath, 'utf8');
             const statements = initSql
               .split(';')
@@ -37,16 +38,16 @@ const connectDB = async (retries = 10, delay = 5000) => {
               await sequelize.query(stmt);
             }
             console.log('✅ init.sql executed successfully');
-          } else {
-            console.log('ℹ️ init.sql not found');
+          } catch (initError) {
+            console.log('⚠️ Error executing init.sql:', initError.message);
           }
-        } catch (initError) {
-          console.log('⚠️ Error executing init.sql:', initError.message);
+        } else {
+          console.log('ℹ️ init.sql not found');
         }
       }
 
-      // Sincronizar modelos
-      await sequelize.sync({ force: false, alter: true });
+      // ✅ Sincronizar modelos (sin borrar datos)
+      await sequelize.sync({ alter: true });
       console.log('✅ Database synchronized');
 
       return; // conexión exitosa → salir
