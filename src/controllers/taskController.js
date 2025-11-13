@@ -51,7 +51,7 @@ const taskController = {
     try {
       const { projectId } = req.params;
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const limit = parseInt(req.query.limit) || 20;
       const { status } = req.query;
       const offset = (page - 1) * limit;
 
@@ -102,7 +102,7 @@ const taskController = {
     try {
       const { projectId } = req.params;
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const limit = parseInt(req.query.limit) || 20;
       const { status } = req.query;
       const offset = (page - 1) * limit;
 
