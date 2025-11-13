@@ -5,7 +5,9 @@ const taskController = {
   // Obtener todas las tareas
   getAllTasks: async (req, res) => {
     try {
-      const { page = 1, limit = 10, status, projectId } = req.query;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const { status, projectId } = req.query;
       const offset = (page - 1) * limit;
       
       const whereClause = {};
@@ -19,8 +21,8 @@ const taskController = {
           as: 'taskType',
           attributes: ['id', 'title']
         }],
-        limit: parseInt(limit),
-        offset: parseInt(offset),
+        limit: limit,
+        offset: offset,
         order: [['id', 'DESC']]
       });
 
@@ -28,8 +30,8 @@ const taskController = {
         success: true,
         data: tasks.rows,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: page,
+          limit: limit,
           total: tasks.count,
           totalPages: Math.ceil(tasks.count / limit)
         }
@@ -48,7 +50,9 @@ const taskController = {
   getTasksByProject: async (req, res) => {
     try {
       const { projectId } = req.params;
-      const { page = 1, limit = 10, status } = req.query;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const { status } = req.query;
       const offset = (page - 1) * limit;
 
       if (!projectId) {
@@ -68,8 +72,8 @@ const taskController = {
           as: 'taskType',
           attributes: ['id', 'title']
         }],
-        limit: parseInt(limit),
-        offset: parseInt(offset),
+        limit: limit,
+        offset: offset,
         order: [['createdAt', 'DESC']]
       });
 
@@ -77,8 +81,8 @@ const taskController = {
         success: true,
         data: tasks.rows,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: page,
+          limit: limit,
           total: tasks.count,
           totalPages: Math.ceil(tasks.count / limit)
         }
@@ -97,7 +101,9 @@ const taskController = {
   getUnassignedTasksByProject: async (req, res) => {
     try {
       const { projectId } = req.params;
-      const { page = 1, limit = 10, status } = req.query;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const { status } = req.query;
       const offset = (page - 1) * limit;
 
       if (!projectId) {
@@ -130,8 +136,8 @@ const taskController = {
           as: 'taskType',
           attributes: ['id', 'title']
         }],
-        limit: parseInt(limit),
-        offset: parseInt(offset),
+        limit: limit,
+        offset: offset,
         order: [['createdAt', 'DESC']]
       });
 
@@ -139,8 +145,8 @@ const taskController = {
         success: true,
         data: tasks.rows,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
+          page: page,
+          limit: limit,
           total: tasks.count,
           totalPages: Math.ceil(tasks.count / limit)
         }
