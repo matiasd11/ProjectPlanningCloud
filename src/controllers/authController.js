@@ -67,45 +67,6 @@ const authController = {
     }
   },
 
-  // Validar token JWT
-  validateToken: async (req, res) => {
-    try {
-      const { token } = req.body;
-
-      if (!token) {
-        return res.status(400).json({
-          success: false,
-          message: 'Token requerido'
-        });
-      }
-
-      const decoded = verifyToken(token);
-
-      if (!decoded) {
-        return res.status(401).json({
-          success: false,
-          message: 'Token inválido o expirado'
-        });
-      }
-
-      res.json({
-        success: true,
-        message: 'Token válido',
-        data: {
-          user: decoded,
-          isValid: true
-        }
-      });
-
-    } catch (error) {
-      console.error('Error validando token:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error al validar token',
-        error: error.message
-      });
-    }
-  }
 };
 
 module.exports = authController;

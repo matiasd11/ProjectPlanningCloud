@@ -106,6 +106,29 @@ const commitmentController = {
       }
       commitment.status = 'approved';
       await commitment.save();
+
+      // Rechazar todos los demás commitments de esta tarea
+      const { Op } = require('sequelize');
+      await Commitment.update(
+        { status: 'rejected' },
+        {
+          where: {
+            taskId: taskId,
+            id: { [Op.ne]: commitmentId } // Excluir el commitment aprobado
+          }
+        }
+      );
+      
+      console.log(`✅ Commitment ${commitmentId} aprobado. Los demás commitments de la tarea ${taskId} fueron rechazados.`);
+
+      // Actualizar la tarea asignándole la ONG responsable
+      const task = await Task.findByPk(taskId);
+      if (task) {
+        task.takenBy = commitment.ongId;
+        await task.save();
+        console.log(`✅ Tarea ${taskId} asignada a la ONG con id ${commitment.ongId}`);
+      }
+      
       res.json({ success: true, data: commitment });
     } catch (error) {
       console.error('Error asignando commitment:', error);
