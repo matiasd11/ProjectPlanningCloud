@@ -494,71 +494,38 @@ router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
 
 /**
  * @swagger
- * /api/tasks/{id}:
- *   patch:
- *     summary: Actualizar una tarea existente
- *     description: Permite actualizar parcialmente los campos de una tarea existente. Se pueden modificar campos como título, descripción, estado, fechas, horas, etc.
+ * /api/tasks/updateStatus:
+ *   post:
+ *     summary: Actualizar el status de una tarea
+ *     description: Permite actualizar únicamente el status de una tarea existente. Los valores permitidos son 'todo', 'in_progress' y 'done'.
  *     tags: [Tasks]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la tarea a actualizar
- *         schema:
- *           type: integer
- *           example: 1
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - taskId
+ *               - status
  *             properties:
- *               title:
- *                 type: string
- *                 example: "Instalación de paneles solares"
- *               description:
- *                 type: string
- *                 example: "Montar paneles fotovoltaicos en el techo del edificio comunitario"
+ *               taskId:
+ *                 type: integer
+ *                 description: ID de la tarea a actualizar
+ *                 example: 1
  *               status:
  *                 type: string
  *                 enum: [todo, in_progress, done]
+ *                 description: Nuevo estado de la tarea
  *                 example: "in_progress"
- *               dueDate:
- *                 type: string
- *                 format: date-time
- *                 example: "2024-12-31T23:59:59Z"
- *               estimatedHours:
- *                 type: number
- *                 format: decimal
- *                 example: 10.5
- *               actualHours:
- *                 type: number
- *                 format: decimal
- *                 example: 8.0
- *               projectId:
- *                 type: integer
- *                 example: 1
- *               takenBy:
- *                 type: integer
- *                 example: 3
- *               createdBy:
- *                 type: integer
- *                 example: 1
- *               taskTypeId:
- *                 type: integer
- *                 example: 2
- *               isCoverageRequest:
- *                 type: boolean
- *                 example: true
  *             example:
+ *               taskId: 1
  *               status: "in_progress"
- *               actualHours: 5.5
  *     responses:
  *       200:
- *         description: Tarea actualizada exitosamente
+ *         description: Status de la tarea actualizado exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -571,7 +538,7 @@ router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
  *                   $ref: '#/components/schemas/Task'
  *                 message:
  *                   type: string
- *                   example: "Tarea actualizada exitosamente"
+ *                   example: "Status de la tarea actualizado exitosamente"
  *       400:
  *         description: Error en los datos proporcionados
  *         content:
@@ -584,10 +551,7 @@ router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Error al actualizar la tarea"
- *                 error:
- *                   type: string
- *                   example: "Validation error: status must be one of [todo, in_progress, done]"
+ *                   example: "taskId y status son requeridos"
  *       404:
  *         description: Tarea no encontrada
  *         content:
@@ -631,7 +595,7 @@ router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
  *                   type: string
  *                   example: "Database connection failed"
  */
-router.patch('/:id', authenticateToken, taskController.updateTask);
+router.post('/updateStatus', authenticateToken, taskController.updateTask);
 
 
 module.exports = router;

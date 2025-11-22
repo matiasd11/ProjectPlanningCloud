@@ -221,14 +221,36 @@ const taskController = {
     }
   },
 
-  // Actualizar una tarea
+  // Actualizar el status de una tarea
   updateTask: async (req, res) => {
     try {
-      const { id } = req.params;
-      const [updatedRows] = await Task.update(req.body, {
-        where: { id },
-        returning: true
-      });
+      const { taskId, status } = req.body;
+
+      // Validar que se envíen los campos requeridos
+      if (!taskId || !status) {
+        return res.status(400).json({
+          success: false,
+          message: 'taskId y status son requeridos'
+        });
+      }
+
+      // Validar que el status sea válido
+      const validStatuses = ['todo', 'in_progress', 'done'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: `Status inválido. Valores permitidos: ${validStatuses.join(', ')}`
+        });
+      }
+
+      // Actualizar solo el status
+      const [updatedRows] = await Task.update(
+        { status },
+        {
+          where: { id: taskId },
+          returning: true
+        }
+      );
 
       if (updatedRows === 0) {
         return res.status(404).json({
@@ -237,7 +259,7 @@ const taskController = {
         });
       }
 
-      const updatedTask = await Task.findByPk(id, {
+      const updatedTask = await Task.findByPk(taskId, {
         include: [{
           model: TaskType,
           as: 'taskType',
@@ -248,13 +270,13 @@ const taskController = {
       res.json({
         success: true,
         data: updatedTask,
-        message: 'Tarea actualizada exitosamente'
+        message: 'Status de la tarea actualizado exitosamente'
       });
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error('Error updating task status:', error);
       res.status(400).json({
         success: false,
-        message: 'Error al actualizar la tarea',
+        message: 'Error al actualizar el status de la tarea',
         error: error.message
       });
     }
