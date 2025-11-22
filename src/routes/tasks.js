@@ -1,6 +1,6 @@
 const express = require('express');
 const taskController = require('../controllers/taskController');
-const { authenticateToken, optionalAuth } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 
@@ -490,6 +490,148 @@ router.get('/project/:projectId/unassigned', authenticateToken, taskController.g
  *                   example: "Database connection failed"
  */
 router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
+
+
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   patch:
+ *     summary: Actualizar una tarea existente
+ *     description: Permite actualizar parcialmente los campos de una tarea existente. Se pueden modificar campos como título, descripción, estado, fechas, horas, etc.
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la tarea a actualizar
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Instalación de paneles solares"
+ *               description:
+ *                 type: string
+ *                 example: "Montar paneles fotovoltaicos en el techo del edificio comunitario"
+ *               status:
+ *                 type: string
+ *                 enum: [todo, in_progress, done]
+ *                 example: "in_progress"
+ *               dueDate:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-12-31T23:59:59Z"
+ *               estimatedHours:
+ *                 type: number
+ *                 format: decimal
+ *                 example: 10.5
+ *               actualHours:
+ *                 type: number
+ *                 format: decimal
+ *                 example: 8.0
+ *               projectId:
+ *                 type: integer
+ *                 example: 1
+ *               takenBy:
+ *                 type: integer
+ *                 example: 3
+ *               createdBy:
+ *                 type: integer
+ *                 example: 1
+ *               taskTypeId:
+ *                 type: integer
+ *                 example: 2
+ *               isCoverageRequest:
+ *                 type: boolean
+ *                 example: true
+ *             example:
+ *               status: "in_progress"
+ *               actualHours: 5.5
+ *     responses:
+ *       200:
+ *         description: Tarea actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Task'
+ *                 message:
+ *                   type: string
+ *                   example: "Tarea actualizada exitosamente"
+ *       400:
+ *         description: Error en los datos proporcionados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error al actualizar la tarea"
+ *                 error:
+ *                   type: string
+ *                   example: "Validation error: status must be one of [todo, in_progress, done]"
+ *       404:
+ *         description: Tarea no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Tarea no encontrada"
+ *       401:
+ *         description: Token de autenticación inválido o faltante
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Token de autenticación requerido"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error interno del servidor"
+ *                 error:
+ *                   type: string
+ *                   example: "Database connection failed"
+ */
+router.patch('/:id', authenticateToken, taskController.updateTask);
 
 
 module.exports = router;
