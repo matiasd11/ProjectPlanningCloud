@@ -70,6 +70,31 @@ const kpiController = {
                 error: error.message
             });
         }
+    },
+
+    // Obtener el total de tareas con status 'done'
+    getTotalTasksDone: async (req, res) => {
+        try {
+            const totalTasksDone = await Task.count({
+                where: {
+                    status: 'done'
+                }
+            });
+
+            res.json({
+                success: true,
+                data: {
+                    totalTasksDone: totalTasksDone
+                }
+            });
+        } catch (error) {
+            console.error('Error fetching total tasks done:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener el total de tareas completadas',
+                error: error.message
+            });
+        }
     }
 };
 

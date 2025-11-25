@@ -46,6 +46,19 @@ const router = express.Router();
  *               type: integer
  *               description: Total de tareas con status 'in_progress'
  *               example: 18
+ *     TotalTasksDoneResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         data:
+ *           type: object
+ *           properties:
+ *             totalTasksDone:
+ *               type: integer
+ *               description: Total de tareas con status 'done'
+ *               example: 96
  */
 
 /**
@@ -191,5 +204,53 @@ router.get('/total-tasks-todo', authenticateToken, kpiController.getTotalTasksTo
  *                   example: "Database connection failed"
  */
 router.get('/total-tasks-in-progress', authenticateToken, kpiController.getTotalTasksInProgress);
+
+/**
+ * @swagger
+ * /api/kpis/total-tasks-done:
+ *   get:
+ *     summary: Obtener el total de tareas completadas
+ *     description: Endpoint que devuelve el número total de tareas con status 'done'.
+ *     tags: [KPIs]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Total de tareas completadas obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TotalTasksDoneResponse'
+ *       401:
+ *         description: Token de autenticación inválido o faltante
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Token de autenticación requerido"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error al obtener el total de tareas completadas"
+ *                 error:
+ *                   type: string
+ *                   example: "Database connection failed"
+ */
+router.get('/total-tasks-done', authenticateToken, kpiController.getTotalTasksDone);
 
 module.exports = router;
