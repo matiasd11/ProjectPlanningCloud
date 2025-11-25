@@ -1,4 +1,4 @@
-const { Task, TaskType, Commitment, sequelize } = require('../models');
+const { Task, TaskType, Commitment, TaskObservation, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 const taskController = {
@@ -50,10 +50,7 @@ const taskController = {
   getTasksByProject: async (req, res) => {
     try {
       const { projectId } = req.params;
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 20;
       const { status } = req.query;
-      const offset = (page - 1) * limit;
 
       if (!projectId) {
         return res.status(400).json({
@@ -67,25 +64,29 @@ const taskController = {
 
       const tasks = await Task.findAndCountAll({
         where: whereClause,
-        include: [{
-          model: TaskType,
-          as: 'taskType',
-          attributes: ['id', 'title']
-        }],
-        limit: limit,
-        offset: offset,
+        include: [
+          {
+            model: TaskType,
+            as: 'taskType',
+            attributes: ['id', 'title']
+          },
+          {
+            model: Commitment,
+            as: 'commitments',
+            required: false
+          },
+          {
+            model: TaskObservation,
+            as: 'observations',
+            required: false
+          }
+        ],
         order: [['createdAt', 'DESC']]
       });
 
       res.json({
         success: true,
         data: tasks.rows,
-        pagination: {
-          page: page,
-          limit: limit,
-          total: tasks.count,
-          totalPages: Math.ceil(tasks.count / limit)
-        }
       });
     } catch (error) {
       console.error('Error fetching tasks by project:', error);
