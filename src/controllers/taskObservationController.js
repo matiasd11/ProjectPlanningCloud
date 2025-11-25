@@ -5,7 +5,7 @@ const taskObservationController = {
   createObservation: async (req, res) => {
     try {
       const { taskId } = req.params;
-      const { observations } = req.body;
+      const { observations, userId } = req.body;
 
       if (!taskId) {
         return res.status(400).json({
@@ -42,7 +42,7 @@ const taskObservationController = {
       const taskObservation = await TaskObservation.create({
         taskId: parseInt(taskId),
         observations: observations.trim(),
-        createdBy: req.user?.id || null
+        createdBy: userId || null
       });
 
       // Obtener la observación con información adicional
@@ -74,7 +74,7 @@ const taskObservationController = {
   resolveObservation: async (req, res) => {
     try {
       const { observationId } = req.params;
-      const { resolution } = req.body;
+      const { resolution, userId } = req.body;
 
       if (!observationId) {
         return res.status(400).json({
@@ -109,7 +109,7 @@ const taskObservationController = {
 
       // Actualizar con la resolución
       observation.resolution = resolution.trim();
-      observation.resolvedBy = req.user?.id || null;
+      observation.resolvedBy = userId || null;
       observation.resolvedAt = new Date();
       await observation.save();
 
