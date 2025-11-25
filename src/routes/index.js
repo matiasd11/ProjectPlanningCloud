@@ -4,6 +4,7 @@ const taskTypesRoutes = require('./taskTypes');
 const authRoutes = require('./auth');
 const commitmentsRoutes = require('./commitments');
 const taskObservationsRoutes = require('./taskObservations');
+const kpisRoutes = require('./kpis');
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.use('/task-types', taskTypesRoutes);
 router.use('/auth', authRoutes);
 router.use('/commitments', commitmentsRoutes);
 router.use('/task-observations', taskObservationsRoutes);
+router.use('/kpis', kpisRoutes);
 
 // Ruta de salud del API
 router.get('/health', (req, res) => {
@@ -38,6 +40,7 @@ router.get('/', (req, res) => {
       },
       tasks: '/api/tasks',
       taskTypes: '/api/task-types',
+      kpis: '/api/kpis',
       health: '/api/health'
     },
     bonita_integration: {
