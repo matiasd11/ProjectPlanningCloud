@@ -359,19 +359,12 @@ const router = express.Router();
  *           type: integer
  *           example: 1
  *       - in: query
- *         name: page
- *         description: Número de página para paginación
+ *         name: status
+ *         description: Filtrar tareas por estado (todo, in_progress, done)
  *         schema:
- *           type: integer
- *           default: 1
- *           example: 1
- *       - in: query
- *         name: limit
- *         description: Cantidad de tareas por página
- *         schema:
- *           type: integer
- *           default: 10
- *           example: 10
+ *           type: string
+ *           enum: [todo, in_progress, done]
+ *           example: "todo"
  *     responses:
  *       200:
  *         description: Lista de tareas del proyecto obtenida exitosamente
