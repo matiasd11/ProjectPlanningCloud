@@ -61,13 +61,17 @@ const router = express.Router();
  *     
  *     ResolveObservationRequest:
  *       type: object
- *       required: [resolution]
+ *       required: [resolution, userId]
  *       properties:
  *         resolution:
  *           type: string
  *           description: Resolución o respuesta a la observación
  *           example: "Se asignarán dos voluntarios adicionales para acelerar la ejecución y cumplir los tiempos."
  *           maxLength: 2000
+ *         userId:
+ *           type: integer
+ *           description: ID del usuario que resuelve la observación
+ *           example: 1
  *     
  *     ObservationsListResponse:
  *       type: object
@@ -336,7 +340,7 @@ router.post('/task/:taskId', authenticateToken, taskObservationController.create
 /**
  * @swagger
  * /api/task-observations/{observationId}/resolve:
- *   put:
+ *   post:
  *     summary: Resolver observación de una tarea
  *     description: Agrega una resolución a una observación específica de una tarea
  *     tags: [Task Observations]
@@ -356,6 +360,9 @@ router.post('/task/:taskId', authenticateToken, taskObservationController.create
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/ResolveObservationRequest'
+ *           example:
+ *             resolution: "Se asignarán dos voluntarios adicionales para acelerar la ejecución y cumplir los tiempos."
+ *             userId: 1
  *     responses:
  *       200:
  *         description: Observación resuelta exitosamente
@@ -445,6 +452,6 @@ router.post('/task/:taskId', authenticateToken, taskObservationController.create
  *                   type: string
  *                   example: "Database connection failed"
  */
-router.put('/:observationId/resolve', authenticateToken, taskObservationController.resolveObservation);
+router.post('/:observationId/resolve', authenticateToken, taskObservationController.resolveObservation);
 
 module.exports = router;
