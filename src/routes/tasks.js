@@ -63,6 +63,71 @@ const router = express.Router();
  *             title:
  *               type: string
  *               example: "Colocación de cimientos"
+ *         commitments:
+ *           type: array
+ *           description: Array de compromisos relacionados con la tarea
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 1
+ *               taskId:
+ *                 type: integer
+ *                 example: 1
+ *               ongId:
+ *                 type: integer
+ *                 example: 3
+ *               status:
+ *                 type: string
+ *                 enum: [pending, approved, rejected, done]
+ *                 example: "pending"
+ *               description:
+ *                 type: string
+ *                 example: "Aportaremos los fondos necesarios para cubrir la compra de materiales."
+ *               createdAt:
+ *                 type: string
+ *                 format: date-time
+ *               updatedAt:
+ *                 type: string
+ *                 format: date-time
+ *         observations:
+ *           type: array
+ *           description: Array de observaciones relacionadas con la tarea
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 1
+ *               taskId:
+ *                 type: integer
+ *                 example: 1
+ *               observations:
+ *                 type: string
+ *                 example: "El avance reportado es menor al esperado para esta etapa."
+ *               resolution:
+ *                 type: string
+ *                 nullable: true
+ *                 example: null
+ *               createdBy:
+ *                 type: integer
+ *                 example: 1
+ *               resolvedBy:
+ *                 type: integer
+ *                 nullable: true
+ *                 example: null
+ *               resolvedAt:
+ *                 type: string
+ *                 format: date-time
+ *                 nullable: true
+ *                 example: null
+ *               createdAt:
+ *                 type: string
+ *                 format: date-time
+ *               updatedAt:
+ *                 type: string
+ *                 format: date-time
  * 
  * 
  *     TasksListResponse:
@@ -92,6 +157,8 @@ const router = express.Router();
  *               taskType:
  *                 id: 2
  *                 title: "Instalación de paneles solares o eólicos"
+ *               commitments: []
+ *               observations: []
  *             - id: 2
  *               title: "Instalación de luminarias LED"
  *               description: "Colocar luces de bajo consumo en la plaza y calles principales."
@@ -108,6 +175,24 @@ const router = express.Router();
  *               taskType:
  *                 id: 2
  *                 title: "Instalación de paneles solares o eólicos"
+ *               commitments:
+ *                 - id: 1
+ *                   taskId: 2
+ *                   ongId: 3
+ *                   status: "approved"
+ *                   description: "Nos comprometemos a financiar esta etapa."
+ *                   createdAt: "2024-01-15T10:30:00Z"
+ *                   updatedAt: "2024-01-15T10:30:00Z"
+ *               observations:
+ *                 - id: 1
+ *                   taskId: 2
+ *                   observations: "El avance reportado es menor al esperado."
+ *                   resolution: null
+ *                   createdBy: 1
+ *                   resolvedBy: null
+ *                   resolvedAt: null
+ *                   createdAt: "2024-01-15T10:30:00Z"
+ *                   updatedAt: "2024-01-15T10:30:00Z"
  *         pagination:
  *           type: object
  *           properties:
