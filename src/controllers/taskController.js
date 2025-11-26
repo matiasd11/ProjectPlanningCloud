@@ -51,6 +51,7 @@ const taskController = {
     try {
       const { projectId } = req.params;
       const { status } = req.query;
+      const { collaboratorId } = req.query;
 
       if (!projectId) {
         return res.status(400).json({
@@ -61,6 +62,7 @@ const taskController = {
 
       const whereClause = { projectId };
       if (status) whereClause.status = status;
+      if (collaboratorId) whereClause.takenBy = collaboratorId;
 
       const tasks = await Task.findAndCountAll({
         where: whereClause,
