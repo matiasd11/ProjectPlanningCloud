@@ -420,6 +420,84 @@ router.get('/project/:projectId', authenticateToken, taskController.getTasksByPr
 
 /**
  * @swagger
+ * /api/tasks/{collaboratorId}:
+ *   get:
+ *     summary: Recuperar tareas tomadas por un colaborador específico
+ *     description: Método que permite recuperar todas las tareas que han sido tomadas (takenBy) por un colaborador específico. Opcionalmente se puede filtrar por estado.
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: collaboratorId
+ *         required: true
+ *         description: ID del colaborador
+ *         schema:
+ *           type: integer
+ *           example: 3
+ *       - in: query
+ *         name: status
+ *         description: Filtrar tareas por estado (todo, in_progress, done)
+ *         schema:
+ *           type: string
+ *           enum: [todo, in_progress, done]
+ *           example: "todo"
+ *     responses:
+ *       200:
+ *         description: Lista de tareas del colaborador obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TasksListResponse'
+ *       400:
+ *         description: collaboratorId requerido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "collaboratorId es requerido"
+ *       401:
+ *         description: Token de autenticación inválido o faltante
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Token de autenticación requerido"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Error al obtener las tareas por colaborador"
+ *                 error:
+ *                   type: string
+ *                   example: "Database connection failed"
+ */
+router.get('/:collaboratorId', authenticateToken, taskController.getTasksByCollaboratorId);
+
+
+
+/**
+ * @swagger
  * /api/tasks/project/{projectId}/unassigned:
  *   get:
  *     summary: Recuperar pedidos de colaboración sin asignar de un proyecto
@@ -674,6 +752,7 @@ router.post('/bulk', authenticateToken, taskController.createMultipleTasks);
  *                   example: "Database connection failed"
  */
 router.post('/updateStatus', authenticateToken, taskController.updateTask);
+
 
 
 module.exports = router;

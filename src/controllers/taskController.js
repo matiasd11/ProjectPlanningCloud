@@ -51,7 +51,6 @@ const taskController = {
     try {
       const { projectId } = req.params;
       const { status } = req.query;
-      const { collaboratorId } = req.query;
 
       if (!projectId) {
         return res.status(400).json({
@@ -62,7 +61,58 @@ const taskController = {
 
       const whereClause = { projectId };
       if (status) whereClause.status = status;
-      if (collaboratorId) whereClause.takenBy = collaboratorId;
+
+      const tasks = await Task.findAndCountAll({
+        where: whereClause,
+        include: [
+          {
+            model: TaskType,
+            as: 'taskType',
+            attributes: ['id', 'title']
+          },
+          {
+            model: Commitment,
+            as: 'commitments',
+            required: false
+          },
+          {
+            model: TaskObservation,
+            as: 'observations',
+            required: false
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        data: tasks.rows,
+      });
+    } catch (error) {
+      console.error('Error fetching tasks by project:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al obtener las tareas por proyecto',
+        error: error.message
+      });
+    }
+  },
+
+  // Obtener tareas por collaboratorId
+  getTasksByCollaboratorId: async (req, res) => {
+    try {
+      const { collaboratorId } = req.params;
+      const { status } = req.query;
+
+      if (!collaboratorId) {
+        return res.status(400).json({
+          success: false,
+          message: 'collaboratorId es requerido'
+        });
+      }
+
+      const whereClause = { takenBy: collaboratorId };
+      if (status) whereClause.status = status;
 
       const tasks = await Task.findAndCountAll({
         where: whereClause,
