@@ -16,10 +16,36 @@ const router = express.Router();
  *         data:
  *           type: object
  *           properties:
- *             totalTasks:
+ *             total:
  *               type: integer
  *               description: Total de tareas cargadas en el sistema
  *               example: 156
+ *             period:
+ *               type: object
+ *               properties:
+ *                 startDate:
+ *                   type: string
+ *                   format: date
+ *                   example: "2024-10-26"
+ *                 endDate:
+ *                   type: string
+ *                   format: date
+ *                   example: "2024-11-25"
+ *                 days:
+ *                   type: integer
+ *                   example: 30
+ *             tasksPerDay:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2024-11-01"
+ *                   total:
+ *                     type: integer
+ *                     example: 5
  *     TotalTasksTodoResponse:
  *       type: object
  *       properties:
@@ -29,10 +55,14 @@ const router = express.Router();
  *         data:
  *           type: object
  *           properties:
- *             totalTasksTodo:
+ *             total:
  *               type: integer
  *               description: Total de tareas con status 'todo'
  *               example: 42
+ *             period:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/period'
+ *             tasksPerDay:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/tasksPerDay'
  *     TotalTasksInProgressResponse:
  *       type: object
  *       properties:
@@ -42,10 +72,14 @@ const router = express.Router();
  *         data:
  *           type: object
  *           properties:
- *             totalTasksInProgress:
+ *             total:
  *               type: integer
  *               description: Total de tareas con status 'in_progress'
  *               example: 18
+ *             period:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/period'
+ *             tasksPerDay:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/tasksPerDay'
  *     TotalTasksDoneResponse:
  *       type: object
  *       properties:
@@ -55,10 +89,14 @@ const router = express.Router();
  *         data:
  *           type: object
  *           properties:
- *             totalTasksDone:
+ *             total:
  *               type: integer
  *               description: Total de tareas con status 'done'
  *               example: 96
+ *             period:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/period'
+ *             tasksPerDay:
+ *               $ref: '#/components/schemas/TotalTasksResponse/properties/data/properties/tasksPerDay'
  */
 
 /**
@@ -118,6 +156,14 @@ router.get('/total-tasks', authenticateToken, kpiController.getTotalTasks);
  *     tags: [KPIs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         description: Número de días hacia atrás a consultar
+ *         schema:
+ *           type: integer
+ *           default: 30
+ *           example: 30
  *     responses:
  *       200:
  *         description: Total de tareas pendientes obtenido exitosamente
@@ -166,6 +212,14 @@ router.get('/total-tasks-todo', authenticateToken, kpiController.getTotalTasksTo
  *     tags: [KPIs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         description: Número de días hacia atrás a consultar
+ *         schema:
+ *           type: integer
+ *           default: 30
+ *           example: 30
  *     responses:
  *       200:
  *         description: Total de tareas en progreso obtenido exitosamente
@@ -214,6 +268,14 @@ router.get('/total-tasks-in-progress', authenticateToken, kpiController.getTotal
  *     tags: [KPIs]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         description: Número de días hacia atrás a consultar
+ *         schema:
+ *           type: integer
+ *           default: 30
+ *           example: 30
  *     responses:
  *       200:
  *         description: Total de tareas completadas obtenido exitosamente

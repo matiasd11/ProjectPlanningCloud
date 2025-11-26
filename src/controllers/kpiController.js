@@ -1,15 +1,50 @@
 const { Task } = require('../models');
 
 const kpiController = {
-    // Obtener el total de tareas cargadas
+    // Obtener el total de tareas cargadas por día
     getTotalTasks: async (req, res) => {
         try {
+            const days = parseInt(req.query.days) || 30;
+            const { sequelize } = require('../models');
+            const { Op } = require('sequelize');
+
+            // Calcular fecha de inicio
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Total general
             const totalTasks = await Task.count();
+
+            // Tareas por día
+            const tasksPerDay = await Task.findAll({
+                attributes: [
+                    [sequelize.fn('DATE', sequelize.col('createdAt')), 'date'],
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'total']
+                ],
+                where: {
+                    createdAt: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    }
+                },
+                group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+                order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']]
+            });
 
             res.json({
                 success: true,
                 data: {
-                    totalTasks: totalTasks
+                    total: totalTasks,
+                    period: {
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                        days: days
+                    },
+                    tasksPerDay: tasksPerDay.map(item => ({
+                        date: item.dataValues.date,
+                        total: parseInt(item.dataValues.total)
+                    }))
                 }
             });
         } catch (error) {
@@ -22,19 +57,53 @@ const kpiController = {
         }
     },
 
-    // Obtener el total de tareas con status 'todo'
+    // Obtener el total de tareas con status 'todo' por día
     getTotalTasksTodo: async (req, res) => {
         try {
+            const days = parseInt(req.query.days) || 30;
+            const { sequelize } = require('../models');
+            const { Op } = require('sequelize');
+
+            // Calcular fecha de inicio
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Total de tareas todo
             const totalTasksTodo = await Task.count({
+                where: { status: 'todo' }
+            });
+
+            // Tareas todo por día
+            const tasksPerDay = await Task.findAll({
+                attributes: [
+                    [sequelize.fn('DATE', sequelize.col('createdAt')), 'date'],
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'total']
+                ],
                 where: {
-                    status: 'todo'
-                }
+                    status: 'todo',
+                    createdAt: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    }
+                },
+                group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+                order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']]
             });
 
             res.json({
                 success: true,
                 data: {
-                    totalTasksTodo: totalTasksTodo
+                    total: totalTasksTodo,
+                    period: {
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                        days: days
+                    },
+                    tasksPerDay: tasksPerDay.map(item => ({
+                        date: item.dataValues.date,
+                        total: parseInt(item.dataValues.total)
+                    }))
                 }
             });
         } catch (error) {
@@ -47,19 +116,53 @@ const kpiController = {
         }
     },
 
-    // Obtener el total de tareas con status 'in_progress'
+    // Obtener el total de tareas con status 'in_progress' por día
     getTotalTasksInProgress: async (req, res) => {
         try {
+            const days = parseInt(req.query.days) || 30;
+            const { sequelize } = require('../models');
+            const { Op } = require('sequelize');
+
+            // Calcular fecha de inicio
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Total de tareas en progreso
             const totalTasksInProgress = await Task.count({
+                where: { status: 'in_progress' }
+            });
+
+            // Tareas en progreso por día
+            const tasksPerDay = await Task.findAll({
+                attributes: [
+                    [sequelize.fn('DATE', sequelize.col('createdAt')), 'date'],
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'total']
+                ],
                 where: {
-                    status: 'in_progress'
-                }
+                    status: 'in_progress',
+                    createdAt: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    }
+                },
+                group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+                order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']]
             });
 
             res.json({
                 success: true,
                 data: {
-                    totalTasksInProgress: totalTasksInProgress
+                    total: totalTasksInProgress,
+                    period: {
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                        days: days
+                    },
+                    tasksPerDay: tasksPerDay.map(item => ({
+                        date: item.dataValues.date,
+                        total: parseInt(item.dataValues.total)
+                    }))
                 }
             });
         } catch (error) {
@@ -72,19 +175,53 @@ const kpiController = {
         }
     },
 
-    // Obtener el total de tareas con status 'done'
+    // Obtener el total de tareas con status 'done' por día
     getTotalTasksDone: async (req, res) => {
         try {
+            const days = parseInt(req.query.days) || 30;
+            const { sequelize } = require('../models');
+            const { Op } = require('sequelize');
+
+            // Calcular fecha de inicio
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Total de tareas completadas
             const totalTasksDone = await Task.count({
+                where: { status: 'done' }
+            });
+
+            // Tareas completadas por día
+            const tasksPerDay = await Task.findAll({
+                attributes: [
+                    [sequelize.fn('DATE', sequelize.col('createdAt')), 'date'],
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'total']
+                ],
                 where: {
-                    status: 'done'
-                }
+                    status: 'done',
+                    createdAt: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    }
+                },
+                group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+                order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']]
             });
 
             res.json({
                 success: true,
                 data: {
-                    totalTasksDone: totalTasksDone
+                    total: totalTasksDone,
+                    period: {
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                        days: days
+                    },
+                    tasksPerDay: tasksPerDay.map(item => ({
+                        date: item.dataValues.date,
+                        total: parseInt(item.dataValues.total)
+                    }))
                 }
             });
         } catch (error) {
