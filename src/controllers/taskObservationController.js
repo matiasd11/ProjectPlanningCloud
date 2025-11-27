@@ -116,11 +116,11 @@ const taskObservationController = {
 
       // Obtener la observación actualizada
       const updatedObservation = await TaskObservation.findByPk(observationId, {
-        include: [{
-          model: Task,
-          as: 'task',
-          attributes: ['id', 'title', 'status']
-        }]
+        // include: [{
+        //   model: Task,
+        //   as: 'task',
+        //   attributes: ['id', 'title', 'status']
+        // }]
       });
 
       res.json({
