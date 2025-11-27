@@ -62,6 +62,13 @@ const TaskObservation = sequelize.define('TaskObservation', {
     defaultValue: DataTypes.NOW,
     field: 'updated_at',
     comment: 'Fecha de última actualización de la observación'
+  },
+  // Referencia al caso en Bonita BPM
+  bonitaCaseId: {
+    type: DataTypes.BIGINT,
+    allowNull: true,
+    field: 'bonita_case_id',
+    comment: 'ID del caso en Bonita BPM'
   }
 }, {
   tableName: 'task_observations',
@@ -72,7 +79,8 @@ const TaskObservation = sequelize.define('TaskObservation', {
     { fields: ['created_by'] },
     { fields: ['resolved_by'] },
     { fields: ['resolved_at'] },
-    { fields: ['created_at'] }
+    { fields: ['created_at'] },
+    { fields: ['bonita_case_id'] }
   ]
 });
 

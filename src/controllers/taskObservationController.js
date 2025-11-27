@@ -5,7 +5,7 @@ const taskObservationController = {
   createObservation: async (req, res) => {
     try {
       const { taskId } = req.params;
-      const { observations, userId } = req.body;
+      const { observations, userId, bonitaCaseId } = req.body;
 
       if (!taskId) {
         return res.status(400).json({
@@ -42,7 +42,8 @@ const taskObservationController = {
       const taskObservation = await TaskObservation.create({
         taskId: parseInt(taskId),
         observations: observations.trim(),
-        createdBy: userId || null
+        createdBy: userId || null,
+        bonitaCaseId: bonitaCaseId || null
       });
 
       // Obtener la observación con información adicional
